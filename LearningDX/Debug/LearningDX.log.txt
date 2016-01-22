@@ -1,0 +1,5 @@
+﻿  Main.cpp
+c:\users\joey\documents\visual studio 2015\projects\learningdx\learningdx\main.cpp(89): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\joey\documents\visual studio 2015\projects\learningdx\learningdx\main.cpp(130): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  LearningDX.vcxproj -> C:\Users\Joey\Documents\Visual Studio 2015\Projects\LearningDX\Debug\LearningDX.exe
+  LearningDX.vcxproj -> C:\Users\Joey\Documents\Visual Studio 2015\Projects\LearningDX\Debug\LearningDX.pdb (Partial PDB)

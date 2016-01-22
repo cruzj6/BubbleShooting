@@ -1,0 +1,4 @@
+﻿  Main.cpp
+c:\users\joey\documents\visual studio 2015\projects\learningdx\learningdx\main.cpp(11): warning C4715: 'WindowProc': not all control paths return a value
+  LearningDX.vcxproj -> c:\users\joey\documents\visual studio 2015\Projects\LearningDX\x64\Debug\LearningDX.exe
+  LearningDX.vcxproj -> c:\users\joey\documents\visual studio 2015\Projects\LearningDX\x64\Debug\LearningDX.pdb (Partial PDB)
