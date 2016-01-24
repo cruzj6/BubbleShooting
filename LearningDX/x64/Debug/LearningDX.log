@@ -1,8 +1,7 @@
 ﻿  Main.cpp
-c:\users\joey\bubbleshooting\learningdx\main.cpp(78): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\joey\bubbleshooting\learningdx\main.cpp(129): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\joey\bubbleshooting\learningdx\main.cpp(138): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\joey\bubbleshooting\learningdx\main.cpp(142): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\joey\bubbleshooting\learningdx\main.cpp(172): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  LINK : C:\Users\Joey\BubbleShooting\x64\Debug\LearningDX.exe not found or not built by the last incremental link; performing full link
+c:\users\joey\bubbleshooting\learningdx\main.cpp(85): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\joey\bubbleshooting\learningdx\main.cpp(136): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\joey\bubbleshooting\learningdx\main.cpp(145): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\joey\bubbleshooting\learningdx\main.cpp(149): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\joey\bubbleshooting\learningdx\main.cpp(182): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   LearningDX.vcxproj -> C:\Users\Joey\BubbleShooting\x64\Debug\LearningDX.exe

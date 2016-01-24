@@ -5,6 +5,9 @@
 const float SPAWN_RATE = 1000000.0f;
 const float CIRCLE_RADIUS = 20.0f;
 const float Y_SPAWN_SPEED = 10.0f;//TODO: change later
+const int NUM_ROWS = 10;
+const int NUM_COLS = 10;
+
 Graphics* graphics;
 
 struct ballObject
@@ -69,18 +72,22 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	MSG message;
 	message.message = WM_NULL;
 
-	ballObject balls[10][10] = { 0 };
-
-	for (int j = 1; j <= 5; j++)//For each col
+	ballObject** balls = new ballObject *[NUM_COLS];
+	for (int i = 0; i < NUM_COLS; i++)
 	{
-		for (int i = 1; i <= 10; i++)//for each row
+		balls[i] = new ballObject[NUM_ROWS];
+	}
+
+	for (int j = 0; j < 5; j++)//For each col
+	{
+		for (int i = 0; i < 10; i++)//for each row
 		{
 			float randNum = rand() % 100;
 			if (randNum > 50) {
 				ballObject bp;
 				bp.isMake = 1;
-				bp.yDestination = 40 * j;
-				bp.xDestination = 40 * i;
+				bp.yDestination = 40 * (j + 1);
+				bp.xDestination = 40 * (i + 1);
 				balls[i][j] = bp;
 			}
 			else {
@@ -119,9 +126,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 				graphics->BeginDraw();
 				graphics->ClearScreen(0xF, 0xF, 0xF);
 
-				for (int j = 1; j <= 5; j++)//For each row
+				for (int j = 0; j < 5; j++)//For each row
 				{
-					for (int i = 1; i <= 10; i++)//for each col
+					for (int i = 0; i < 10; i++)//for each col
 					{
 						ballObject* ball = &balls[i][j];
 						float circleRadius = CIRCLE_RADIUS;
@@ -142,8 +149,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 					bp->xDestination = 40 * randPos;
 					bp->yDestination = 40 * 5; //TODO add to last row
 					newBallCreated = true;
+
+					AddBallToArray(balls, *bp);
 				}
 
+				
 				UpdateNewBall(newBallY, spawnCountDown, newBallCreated, *bp, renderNewBall);
 			}
 
@@ -185,6 +195,12 @@ void RenderNewSpawnBall(float ballXDest, float ballYDest, float frameYPos)
 
 void AddBallToArray(ballObject** ballArray, ballObject newBall)
 {
-
+	for (int i = 0; i < NUM_COLS; i++)
+	{
+		for (int j = 0; j < NUM_ROWS; j++)
+		{
+			ballArray[i][j] = newBall;
+		}
+	}
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
