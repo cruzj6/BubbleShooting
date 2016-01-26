@@ -7,4 +7,5 @@ public:
 	void UnLoad() override;
 	void Render(Graphics* gfx) override;
 	void Update() override;
+	void FireBall(float mouseX, float mouseY);
 };

@@ -4,9 +4,10 @@
 #include "GameController.h"
 #include "GameLevel.h"
 #include "Level1.h"
+#include <windowsx.h>
 
 Graphics* graphics;
-
+GameLevel* level1;
 //Function Declarations
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -14,6 +15,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
+		case WM_LBUTTONDOWN:
+			((Level1*)level1)->FireBall(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			return 0;
+
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
@@ -59,7 +64,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	MSG message;
 	message.message = WM_NULL;
 
-	GameLevel* level1 = new Level1();
+	level1 = new Level1();
 	GameController::LoadInitialLevel(level1);
 	while (message.message != WM_QUIT)
 	{

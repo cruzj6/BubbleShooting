@@ -20,6 +20,9 @@
 	float spawnCountDown = SPAWN_RATE;
 	bool renderNewBall = false;
 	bool newBallCreated = false;
+	float ballFireXDirection;
+	float ballFireYDirection;
+	bool fireingBall;
 	ballObject* bp = { 0 }; //Used for creating new balls after the initial balls
 	ballObject** balls;
 
@@ -131,6 +134,12 @@
 
 	}
 
+	void Level1::FireBall(float mouseX, float mouseY)
+	{
+		fireingBall = true;
+		//TODO Get x and y diretion from vector
+		//float xDirection = 
+	}
 
 	void UpdateNewBall(float &newBallY, float &spawnCountDown, bool &newBallCreated, ballObject bp, bool &renderNewBall)
 	{
