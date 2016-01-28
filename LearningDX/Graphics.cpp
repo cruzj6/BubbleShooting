@@ -1,5 +1,6 @@
 #include "Graphics.h"
-
+#include <string.h>
+#include <dwrite.h>
 Graphics::Graphics()
 {
 	factory = NULL;
@@ -24,6 +25,12 @@ bool Graphics::Init(HWND windowHandle)
 	if (res != S_OK)
 		return false;
 
+	res = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(writeFactory), reinterpret_cast<IUnknown **>(&writeFactory));
+	if (res != S_OK)
+	{
+		return false;
+	}
+	
 	//Get the client window's rect size
 	RECT rect;
 	GetClientRect(windowHandle, &rect);
@@ -81,4 +88,18 @@ void Graphics::DrawLine(float xStart, float xFin, float yStart, float yFin, floa
 	D2D1_POINT_2F endPoint = D2D1::Point2F(xFin, yFin);
 	brush->SetColor(D2D1::ColorF(r, b, g, 1.0f));
 	rendertarget->DrawLine(startPoint, endPoint, brush);
+}
+
+void Graphics::WriteText(WCHAR text, float l, float t, float ri, float bot)
+{
+
+	IDWriteTextFormat* format;
+	writeFactory->CreateTextFormat(L"Helvetica", NULL, DWRITE_FONT_WEIGHT_BLACK, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20.0f, L"", &format);
+	wchar_t* test = L"Hello";
+	float stringSize = sizeof(test) / sizeof(wchar_t);
+	D2D1_RECT_F rect = D2D1::Rect(l, t, ri, bot);
+	brush->SetColor(D2D1::ColorF(0xF, 0xA, 0x3, 1.0f));
+	rendertarget->BeginDraw();
+	rendertarget->DrawTextA(test, stringSize, format, rect, brush);
+	rendertarget->EndDraw();
 }

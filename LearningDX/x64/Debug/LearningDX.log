@@ -1,23 +1,29 @@
-﻿Build started 1/27/2016 9:00:17 PM.
+﻿Build started 1/28/2016 1:42:36 PM.
      1>Project "C:\Users\cruzj6\Desktop\LearningDX\LearningDX\LearningDX.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /sdl /Od /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Level1.cpp
          Level1.cpp
-     1>Level1.cpp(62): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(63): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(66): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
+     1>Level1.cpp(67): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
      1>Level1.cpp(68): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
      1>Level1.cpp(69): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(111): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(115): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(164): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(204): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(113): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(117): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
+     1>Level1.cpp(118): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
+     1>Level1.cpp(177): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(191): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(223): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.exe" /INCREMENTAL /NOLOGO d2d1.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.lib" /MACHINE:X64 x64\Debug\GameController.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.exe" /INCREMENTAL /NOLOGO windowscodecs.lib dwrite.lib d2d1.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.lib" /MACHINE:X64 x64\Debug\GameController.obj
+         x64\Debug\GameLevel.obj
          x64\Debug\Graphics.obj
          x64\Debug\Level1.obj
          x64\Debug\Main.obj
+         x64\Debug\SpriteSheet.obj
          LearningDX.vcxproj -> C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.exe
      1>Done Building Project "C:\Users\cruzj6\Desktop\LearningDX\LearningDX\LearningDX.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.03
+Time Elapsed 00:00:03.56

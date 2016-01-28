@@ -1,7 +1,9 @@
-﻿Build started 1/27/2016 9:28:55 PM.
+﻿Build started 1/28/2016 8:57:19 AM.
      1>Project "C:\Users\cruzj6\Desktop\LearningDX\LearningDX\LearningDX.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Level1.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GameController.cpp Graphics.cpp Level1.cpp Main.cpp
+         Main.cpp
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\main.cpp(21): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
          Level1.cpp
      1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(62): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
      1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(68): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
@@ -10,14 +12,19 @@
      1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(115): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
      1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(166): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
      1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(207): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+         Graphics.cpp
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\graphics.cpp(103): warning C4244: 'argument' : conversion from 'float' to 'UINT32', possible loss of data
+         GameController.cpp
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\cruzj6\Desktop\LearningDX\Debug\LearningDX.exe" /INCREMENTAL /NOLOGO d2d1.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:\Users\cruzj6\Desktop\LearningDX\Debug\LearningDX.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\cruzj6\Desktop\LearningDX\Debug\LearningDX.lib" /MACHINE:X86 Debug\GameController.obj
          Debug\Graphics.obj
          Debug\Level1.obj
          Debug\Main.obj
-         LearningDX.vcxproj -> C:\Users\cruzj6\Desktop\LearningDX\Debug\LearningDX.exe
-     1>Done Building Project "C:\Users\cruzj6\Desktop\LearningDX\LearningDX\LearningDX.vcxproj" (Build target(s)).
+     1>Graphics.obj : error LNK2019: unresolved external symbol __imp__DWriteCreateFactory@12 referenced in function "public: bool __thiscall Graphics::Init(struct HWND__ *)" (?Init@Graphics@@QAE_NPAUHWND__@@@Z)
+     1>C:\Users\cruzj6\Desktop\LearningDX\Debug\LearningDX.exe : fatal error LNK1120: 1 unresolved externals
+     1>Done Building Project "C:\Users\cruzj6\Desktop\LearningDX\LearningDX\LearningDX.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:01.09
+Time Elapsed 00:00:02.53

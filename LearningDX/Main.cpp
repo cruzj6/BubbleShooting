@@ -55,7 +55,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 		return -1;
 	}
 
-	AllocConsole();
+	/*AllocConsole();
 
 	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
 	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
@@ -67,7 +67,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	hCrt = _open_osfhandle((long)handle_in, _O_TEXT);
 	FILE* hf_in = _fdopen(hCrt, "r");
 	setvbuf(hf_in, NULL, _IONBF, 128);
-	*stdin = *hf_in;
+	*stdin = *hf_in;*/
 
 	graphics = new Graphics();
 	if (!graphics->Init(mWindHandle))
@@ -80,7 +80,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	MSG message;
 	message.message = WM_NULL;
 
-	level1 = new Level1();
+	level1 = new Level1(graphics);
 	GameController::LoadInitialLevel(level1);
 	while (message.message != WM_QUIT)
 	{
@@ -92,7 +92,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 		else
 		{
 			GameController::Update();
-			GameController::Render(graphics);
+			GameController::Render();
 		}
 #pragma endregion
 

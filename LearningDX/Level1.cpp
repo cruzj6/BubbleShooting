@@ -1,60 +1,61 @@
 #include "GameLevel.h"
 #include "Level1.h"
 #include <math.h>
-
 #include <iostream>
+
 
 	const float SPAWN_RATE = 1000000.0f;
 	const float CIRCLE_RADIUS = 20.0f;
-	const float Y_SPAWN_SPEED = 10.0f;//TODO: change later
-	const int NUM_ROWS = 10;
-	const int NUM_COLS = 10;
-	const float FIRE_SPEED = 0.1f;
-	const float GRID_SPACE_SIZE = 10.0f;
+	const float Y_SPAWN_SPEED = 10.0f;//For entry transition and random new balls
+	const int NUM_ROWS = 8;
+	const int NUM_COLS = 20;
+	const float FIRE_SPEED = 20.0f;
+	const float GRID_SPACE_SIZE = 50.0f;
+	const float X_RES = 800;
+	const float Y_RES = 600;
 
-	struct ballObject
-	{
-		bool exists;
-		int isMake;
-		int yDestination;
-		int xDestination;
-		float currentLocationX;
-		float currentLocationY;
-	};
+	//Entry Transition vars
+	float y = Y_RES;
+	float newBallY = Y_RES;
+	bool isEntry = true;
 
-	//y Speed!
-	float y = 600;
-	float newBallY = 600;
+	//Vars for random new balls
 	float spawnCountDown = SPAWN_RATE;
 	bool renderNewBall = false;
 	bool newBallCreated = false;
+	
+	//Vars for a fired ball
 	float ballFireXDirection;
 	float ballFireYDirection;
 	bool firingBall;
+	
+	//Ball object pointers
 	ballObject* bp = { 0 }; //Used for creating new balls after the initial balls
-	ballObject** balls;
-	ballObject* bpFire = { 0 };
-
-
-	void UpdateNewBall(float &newBallY, float &spawnCountDown, bool &newBallCreated, ballObject bp, bool &renderNewBall);
-	void AddBallToArray(ballObject newBall);
-	void RenderNewSpawnBall(Graphics* gfx, float ballXDest, float ballYDest, float frameYPos);
-	bool CheckBallShouldStop();
-	void DrawGrid(Graphics* gfx);
-	void PrintBallArray();
+	ballObject** balls; //The array of balls in their final destination
+	ballObject* bpFire = { 0 }; //Pointer to a ball object that is being fired as it is being fired
+	
+	
 
 	//Sets initial values, initializes initial ball objects to be
 	//rendered at the start of the level, and allocates memory
 	//for possible ones to come
-
 	void Level1::Load()
 	{
+		sprites = new SpriteSheet(L"test.png", gfx);
+
 		balls = new ballObject *[NUM_ROWS];
-		for (int i = 0; i < NUM_ROWS; i++)
+		for (int i = 0; i < NUM_COLS; i++)
 		{
-			balls[i] = new ballObject[NUM_COLS];
+			balls[i] = new ballObject[NUM_ROWS];
 		}
 
+		LoadInitialLevelBalls();
+		PrintBallArray();
+	}
+
+	//Loads the ball objects for starting out into the array
+	void Level1::LoadInitialLevelBalls()
+	{
 		for (int i = 0; i < NUM_COLS; i++)//For each col
 		{
 			for (int j = 0; j < NUM_ROWS; j++)//for each row
@@ -62,9 +63,8 @@
 				float randNum = rand() % 100;
 				if (randNum > 50) {
 					ballObject newBall;
-					newBall.isMake = 1;
-					newBall.yDestination = 40 * (i + 1);
-					newBall.xDestination = 40 * (j + 1);
+					newBall.yDestination = (CIRCLE_RADIUS * 2) * (j + 1);
+					newBall.xDestination = (CIRCLE_RADIUS * 2) * (i + 1);
 					newBall.currentLocationX = newBall.xDestination;
 					newBall.currentLocationY = newBall.yDestination;
 					newBall.exists = true;
@@ -72,37 +72,39 @@
 				}
 				else {
 					ballObject newBall;
-					newBall.isMake = 0;
 					newBall.exists = false;
 					balls[i][j] = newBall;
 				}
 			}
 		}
-
 	}
 
-	//TODO: release resources
+	//Release resources
 	void Level1::UnLoad()
 	{
 		delete bp;
 		delete bpFire;
 		delete balls;
+		delete sprites;
 	}
 
-	//TODO: Update values every frame
+	//Update values every frame
 	void Level1::Update()
 	{
-		spawnCountDown -= 1;
-
 		if (y > 0)
 		{
 			y -= Y_SPAWN_SPEED;
 		}
+		else
+		{
+			isEntry = false;
+		}
 
+		spawnCountDown -= 1;
 		//If it is time to spawn a new ball, set the render flag to true
 		if (spawnCountDown <= 0) {
 			renderNewBall = true; 
-			newBallY = 600;
+			newBallY = Y_RES;
 		}
 
 		if (renderNewBall){
@@ -112,8 +114,8 @@
 
 				//Transition the ball in
 				bp = new ballObject();
-				bp->xDestination = 40 * randPos;
-				bp->yDestination = 40 * 5; //TODO add to last row
+				bp->xDestination = (CIRCLE_RADIUS * 2) * randPos;
+				bp->yDestination = (CIRCLE_RADIUS * 2) * 5; //TODO add to last row
 				newBallCreated = true;
 
 				AddBallToArray(*bp);//Add it to the array so we can keep track of it after we loose the pointer
@@ -123,71 +125,85 @@
 		}
 		if (firingBall)
 		{
-			//Update the ball being fired
-			bpFire->currentLocationX += ballFireXDirection * (FIRE_SPEED);
-			bpFire->currentLocationY -= ballFireYDirection * (FIRE_SPEED);
-
 			bool shouldStop = CheckBallShouldStop();
 			//TODO Temp to stop making the ball
-			if (bpFire->currentLocationX >= 800.0f || bpFire->currentLocationY <= 0.0f || shouldStop)
+			if (bpFire->currentLocationX >= X_RES || bpFire->currentLocationY <= 0.0f || shouldStop)
 			{
-				AddBallToArray(*bpFire);
 				firingBall = false;
+				AddBallToArray(*bpFire);
 				delete bpFire;
 			}
-		}
-
-		
+			else
+			{
+				//Update the ball being fired
+				bpFire->currentLocationX += ballFireXDirection * (FIRE_SPEED);
+				bpFire->currentLocationY -= ballFireYDirection * (FIRE_SPEED);
+			}
+		}	
 	}
 
-	void Level1::Render(Graphics* gfx)
+	void Level1::Render()
 	{
-		//Initial Entry for the balls
-		if (y > 0)
-		{
 			//If no message lets update
 			gfx->BeginDraw();
-			gfx->ClearScreen(0xF, 0xF, 0xF);
-
-			for (int j = 0; j < 5; j++)//For each row
-			{
-				for (int i = 0; i < 10; i++)//for each col
+			if (isEntry){//Render our entry transition if this is the entry time
+				gfx->ClearScreen(0xF, 0xF, 0xF);
+				for (int j = 0; j < NUM_COLS; j++)//For each row
 				{
-					ballObject* ball = &balls[i][j];
-					float circleRadius = CIRCLE_RADIUS;
-					if (ball->isMake != 0)
-						gfx->DrawCircle(ball->currentLocationX, ball->currentLocationY + y, circleRadius, 0.0, 0.0, 0xF, 1.0);
+					for (int i = 0; i < NUM_ROWS; i++)//for each col
+					{
+						ballObject* ball = &balls[j][i];
+						float circleRadius = CIRCLE_RADIUS;
+						if (ball->exists)
+							gfx->DrawCircle(ball->currentLocationX, ball->currentLocationY + y, circleRadius, 0.0, 0.0, 0xF, 1.0);
+					}
 				}
 			}
+			else
+			{//Render things for playing the level
+				RenderBallArray();
+				RenderFiringBall();
+				
+			}
+			DrawGrid();
+			PrintBallArray();
 			gfx->EndDraw();
-		}
-		else if (renderNewBall)//if it is time to spawn one move a new one in
-		{
-			RenderNewSpawnBall(gfx, bp->xDestination, bp->yDestination, newBallY);
-		}
+	}
 
+	void Level1::RenderFiringBall()
+	{
 		if (firingBall)
 		{
-			gfx->BeginDraw();
-			//Clear the previous
-			gfx->ClearZoneCircle(bpFire->currentLocationX - (ballFireXDirection * FIRE_SPEED), bpFire->currentLocationY + (ballFireYDirection * FIRE_SPEED), (CIRCLE_RADIUS + 3.0f));
-			//Draw the one for this frame
+			sprites->Draw(bpFire->currentLocationX - CIRCLE_RADIUS, bpFire->currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
 			gfx->DrawCircle(bpFire->currentLocationX, bpFire->currentLocationY, CIRCLE_RADIUS, 0.0, 0.0, 0xF, 1.0);
-			gfx->EndDraw();
-			PrintBallArray();
 		}
+	}
 
-		DrawGrid(gfx);
-
+	void Level1::RenderBallArray()
+	{
+		gfx->ClearScreen(0xF, 0xF, 0xF);
+		for (int i = 0; i < NUM_COLS; i++)
+		{
+			for (int j = 0; j < NUM_ROWS; j++)
+			{
+				if (balls[i][j].exists)
+				{
+					sprites->Draw(balls[i][j].currentLocationX - CIRCLE_RADIUS, balls[i][j].currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
+					gfx->DrawCircle(balls[i][j].currentLocationX, balls[i][j].currentLocationY, CIRCLE_RADIUS, 0.0, 0.0, 0xF, 1.0);
+				}
+			}
+		}
 	}
 
 	void Level1::FireBall(float mouseX, float mouseY)
 	{
+		float xCenter = X_RES / 2;
+		float vectorLen = sqrt(pow(xCenter - mouseX, 2) + pow(Y_RES - mouseY, 2));
+
 		firingBall = true;
-		ballFireXDirection = (mouseX - 400);
-		ballFireYDirection = (600 - mouseY);
+		ballFireXDirection =  (mouseX - xCenter) / vectorLen;
+		ballFireYDirection = (Y_RES - mouseY) / vectorLen;
 		bpFire = new ballObject();
-		bpFire->isMake = true;
 		bpFire->currentLocationX = 400;
 		bpFire->currentLocationY = 600;
 	}
@@ -198,7 +214,7 @@
 		delete bpFire;
 	}
 
-	void UpdateNewBall(float &newBallY, float &spawnCountDown, bool &newBallCreated, ballObject bp, bool &renderNewBall)
+	void Level1::UpdateNewBall(float &newBallY, float &spawnCountDown, bool &newBallCreated, ballObject bp, bool &renderNewBall)
 	{
 		bp.currentLocationY = newBallY - Y_SPAWN_SPEED;
 		newBallY -= Y_SPAWN_SPEED;
@@ -213,7 +229,7 @@
 		}
 	}
 
-	void RenderNewSpawnBall(Graphics* gfx, float ballXDest, float ballYDest, float frameYPos)
+	void Level1::RenderNewSpawnBall(float ballXDest, float ballYDest, float frameYPos)
 	{
 		gfx->BeginDraw();
 
@@ -224,7 +240,7 @@
 		gfx->EndDraw();
 	}
 
-	bool CheckBallShouldStop()
+	bool Level1::CheckBallShouldStop()
 	{
 		//TODO: DISTANCE JOEY YOU DUMB SHIT
 		bool isXNear = false;
@@ -244,16 +260,9 @@
 				{
 					float curX = bpFire->currentLocationX;
 					float curY = bpFire->currentLocationY;
-					/*if ((curX <= stopZoneXRight) && (bpFire->currentLocationX >= stopZoneXLeft))
-					{
-						isXNear = true;
-					}
-					if ((curY <= stopZoneYBottom) && (curY >= stopZoneYTop))
-					{
-						isYNear = true;
-					}*/
+
 					float distance = sqrt(pow(placedXCenter - curX, 2) + pow(placedYCenter - curY, 2));
-					if (distance <= (CIRCLE_RADIUS * 2) + 10)
+					if (distance <= ((CIRCLE_RADIUS * 2.0f) + 6.0f))
 					{
 						isXNear = true;
 						isYNear = true;
@@ -270,7 +279,9 @@
 		return isXNear && isYNear;
 	}
 
-	void AddBallToArray(ballObject newBall)
+	//Adds the ball to the array, and sets it to existing
+	//Being in this array means final position for the ball
+	void Level1::AddBallToArray(ballObject &newBall)
 	{
 		newBall.exists = true;
 		for (int i = 0; i < NUM_COLS; i++)
@@ -287,11 +298,13 @@
 		}
 	}
 
-	void PrintBallArray()
+	void Level1::PrintBallArray()
 	{
+		int numExistBalls = 0;
 		std::cout << "--------------Ball Locations---------------\r\n";
 		for (int i = 0; i < NUM_COLS; i++)
 		{
+
 			for (int j = 0; j < NUM_ROWS; j++)
 			{
 
@@ -302,24 +315,27 @@
 					std::cout << "\r\nY: ";
 					std::cout << balls[i][j].currentLocationY;
 					std::cout << "\r\n";
+					numExistBalls++;
 				}
 			}
 		}
+
+		std::cout << numExistBalls;
+		std::cout << " balls exist in array";
 	}
 
-	void DrawGrid(Graphics* gfx)
+	//Draw the debug grid
+	void Level1::DrawGrid()
 	{
-		gfx->BeginDraw();
-		float numVert = 800.0f / GRID_SPACE_SIZE;
+		float numVert = X_RES / GRID_SPACE_SIZE;
 		for (int i = 0; i < numVert; i++)
 		{
 			gfx->DrawLine(GRID_SPACE_SIZE * (i + 1), GRID_SPACE_SIZE * (i + 1), 0, 600, 0xF, 0x0, 0x0);
 		}
 
-		float numHoriz = 600.0f / GRID_SPACE_SIZE;
+		float numHoriz = Y_RES / GRID_SPACE_SIZE;
 		for (int j = 0; j < numHoriz; j++)
 		{
 			gfx->DrawLine(0.0f, 800, GRID_SPACE_SIZE * (j + 1), GRID_SPACE_SIZE * (j + 1), 0xF, 0x0, 0x0);
 		}
-		gfx->EndDraw();
 	}

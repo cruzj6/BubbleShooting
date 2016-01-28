@@ -16,9 +16,9 @@ void GameController::Update()
 	currentLevel->Update();
 }
 
-void GameController::Render(Graphics* gfx)
+void GameController::Render()
 {
-	currentLevel->Render(gfx);
+	currentLevel->Render();
 }
 
 void  GameController::SwitchLevel(GameLevel* newLevel)
