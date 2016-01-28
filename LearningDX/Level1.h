@@ -8,4 +8,5 @@ public:
 	void Render(Graphics* gfx) override;
 	void Update() override;
 	void FireBall(float mouseX, float mouseY);
+	~Level1();
 };

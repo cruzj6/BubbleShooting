@@ -25,6 +25,7 @@ class Graphics
 		void DrawCircle(float x, float y, float radius, float r, float g, float b, float a);
 		void ClearZone(float x, float y, float len, float width);
 		void ClearZoneCircle(float x, float y, float radius);
+		void DrawLine(float xStart, float xFin, float yStart, float yFin, float r, float b, float g);
 		
 	private:
 

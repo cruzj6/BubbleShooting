@@ -73,3 +73,12 @@ void Graphics::DrawCircle(float x, float y, float radius, float r, float g, floa
 	rendertarget->CreateSolidColorBrush(D2D1::ColorF(r, g, b, a), &brush);
 	rendertarget->DrawEllipse(D2D1::Ellipse(D2D1::Point2F(x, y), radius, radius), brush, 3.0f);
 }
+
+
+void Graphics::DrawLine(float xStart, float xFin, float yStart, float yFin, float r, float b, float g)
+{
+	D2D1_POINT_2F startPoint = D2D1::Point2F(xStart, yStart);
+	D2D1_POINT_2F endPoint = D2D1::Point2F(xFin, yFin);
+	brush->SetColor(D2D1::ColorF(r, b, g, 1.0f));
+	rendertarget->DrawLine(startPoint, endPoint, brush);
+}
