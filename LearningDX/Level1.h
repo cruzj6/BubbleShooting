@@ -9,6 +9,17 @@ struct ballObject
 	float currentLocationX = 0;
 	float currentLocationY = 0;
 	bool transitioningIn = 0;
+	ColorTypes color;
+};
+
+enum ColorTypes
+{
+	RED = 0,
+	GREEN = 1,
+	BLUE = 2,
+	ORANGE = 3,
+	YELLOW = 4,
+	NUM_OPTIONS = 5
 };
 
 class Level1 : public GameLevel
@@ -36,4 +47,5 @@ private:
 	void RenderBallArray();
 	void RenderFiringBall();
 	void UpdateSpeedForTime(double timeTotal, double timeDelta);
+	ColorTypes GetRandomColor();
 };

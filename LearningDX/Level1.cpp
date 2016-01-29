@@ -199,6 +199,10 @@ void Level1::RenderFiringBall()
 
 void Level1::RenderBallArray()
 {
+	float r = 0;
+	float g = 0;
+	float b = 0;
+
 	gfx->ClearScreen(0xF, 0xF, 0xF);
 	for (int i = 0; i < NUM_COLS; i++)
 	{
@@ -206,10 +210,50 @@ void Level1::RenderBallArray()
 		{
 			if (balls[i][j].exists)
 			{
+				GetColorRBG(balls[i][j].color, &r, &b, &g);
 				sprites->Draw(balls[i][j].currentLocationX - CIRCLE_RADIUS, balls[i][j].currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
-				gfx->DrawCircle(balls[i][j].currentLocationX, balls[i][j].currentLocationY, CIRCLE_RADIUS, 0.0, 0.0, 0xF, 1.0);
+				gfx->DrawCircle(balls[i][j].currentLocationX, balls[i][j].currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
 			}
 		}
+	}
+}
+
+void GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
+{
+	switch (colorNum)
+	{
+		case ColorTypes::BLUE:
+			*r = 0x0;
+			*g = 0x0;
+			*b = 0xF;
+			break;
+
+		case ColorTypes::GREEN:
+			*r = 0x0;
+			*g = 0xF;
+			*b = 0x0;
+			break;
+		case ColorTypes::ORANGE:
+			*r = 0xF;
+			*g = 0xF;
+			*b = 0x0;
+			break;
+		case ColorTypes::RED:
+			*r = 0xF;
+			*g = 0x0;
+			*b = 0x0;
+			break;
+		case ColorTypes::YELLOW:
+			*r = 0x0;
+			*g = 0x5;
+			*b = 0x0;
+			break;
+
+		default:
+			*r = 0x0;
+			*b = 0x0;
+			*g = 0x0;
+			return;
 	}
 }
 
@@ -297,9 +341,14 @@ bool Level1::CheckBallShouldStop(ballObject* ball)
 
 //Adds the ball to the array, and sets it to existing
 //Being in this array means final position for the ball
+//==========================================================================================
+//TODO: TEMP! This function sets the color of the ball, I need to set
+//up a new function that all balls are initialized in to funnel them into one place before
+//they have a set position
 void Level1::AddBallToArray(ballObject &newBall)
 {
 	newBall.exists = true;
+	newBall.color = GetRandomColor();
 	for (int i = 0; i < NUM_COLS; i++)
 	{
 		for (int j = 0; j < NUM_ROWS; j++)
@@ -354,4 +403,10 @@ void Level1::DrawGrid()
 	{
 		gfx->DrawLine(0.0f, 800, GRID_SPACE_SIZE * (j + 1), GRID_SPACE_SIZE * (j + 1), 0xF, 0x0, 0x0);
 	}
+}
+
+ColorTypes Level1::GetRandomColor()
+{
+	float randNum = rand() % ColorTypes::NUM_OPTIONS;
+	return (ColorTypes)randNum;
 }
