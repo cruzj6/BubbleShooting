@@ -3,11 +3,12 @@
 
 struct ballObject
 {
-	bool exists; //Indicates that this ball should be rendered
-	int yDestination;
-	int xDestination;
-	float currentLocationX;
-	float currentLocationY;
+	bool exists = 0; //Indicates that this ball should be rendered
+	int yDestination = 0;
+	int xDestination = 0;
+	float currentLocationX = 0;
+	float currentLocationY = 0;
+	bool transitioningIn = 0;
 };
 
 class Level1 : public GameLevel
@@ -20,18 +21,19 @@ public:
 	void Load() override;
 	void UnLoad() override;
 	void Render() override;
-	void Update() override;
+	void Update(double timeTotal, double timeDelta) override;
 	void FireBall(float mouseX, float mouseY);
 	~Level1();
 
 private:
 	void LoadInitialLevelBalls();
-	void UpdateNewBall(float &newBallY, float &spawnCountDown, bool &newBallCreated, ballObject bp, bool &renderNewBall);
+	void UpdateNewBall(ballObject* theBall);
 	void AddBallToArray(ballObject &newBall);
 	void RenderNewSpawnBall(float ballXDest, float ballYDest, float frameYPos);
-	bool CheckBallShouldStop();
+	bool CheckBallShouldStop(ballObject* ball);
 	void DrawGrid();
 	void PrintBallArray();
 	void RenderBallArray();
 	void RenderFiringBall();
+	void UpdateSpeedForTime(double timeTotal, double timeDelta);
 };

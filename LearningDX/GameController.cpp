@@ -2,6 +2,13 @@
 
 GameLevel* GameController::currentLevel;
 bool GameController::levelLoading;
+HPTimer* GameController::hpTimer;
+
+void GameController::Init()
+{
+	currentLevel = 0;
+	hpTimer = new HPTimer();
+}
 
 void GameController::LoadInitialLevel(GameLevel* level)
 {
@@ -13,7 +20,8 @@ void GameController::LoadInitialLevel(GameLevel* level)
 
 void GameController::Update()
 {
-	currentLevel->Update();
+	hpTimer->Update();
+	currentLevel->Update(hpTimer->GetTimeTotal(), hpTimer->GetTimeDelta());
 }
 
 void GameController::Render()
