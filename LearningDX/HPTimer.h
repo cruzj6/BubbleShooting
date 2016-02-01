@@ -40,12 +40,15 @@ public:
 
 	double GetTimeTotal()
 	{
+		//Get the amount of cycles passed since the instantiation of this
 		double d = currentCallToUpdate - startTime;
+		//Divide that by the frequency to see how many seconds passed
 		return d / frequency;
 	}
 
 	double GetTimeDelta()
 	{
+		//Same as total time except for each frame
 		double d = currentCallToUpdate - lastCallToUpdate;
 		return d / frequency;
 	}

@@ -102,6 +102,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 
 	}
 
+	level1->UnLoad();
 	delete graphics;
 	delete level1;
 

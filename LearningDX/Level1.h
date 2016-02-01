@@ -1,17 +1,6 @@
 #include "GameLevel.h"
 #include "Graphics.h"
 
-struct ballObject
-{
-	bool exists = 0; //Indicates that this ball should be rendered
-	int yDestination = 0;
-	int xDestination = 0;
-	float currentLocationX = 0;
-	float currentLocationY = 0;
-	bool transitioningIn = 0;
-	ColorTypes color;
-};
-
 enum ColorTypes
 {
 	RED = 0,
@@ -20,6 +9,17 @@ enum ColorTypes
 	ORANGE = 3,
 	YELLOW = 4,
 	NUM_OPTIONS = 5
+};
+
+struct ballObject
+{
+	bool exists = 0; //Indicates that this ball should be rendered
+	int yDestination = 0;
+	int xDestination = 0;
+	float currentLocationX = 0;
+	float currentLocationY = 0;
+	bool transitioningIn = 0;
+	ColorTypes color = ColorTypes::BLUE;
 };
 
 class Level1 : public GameLevel
@@ -48,4 +48,5 @@ private:
 	void RenderFiringBall();
 	void UpdateSpeedForTime(double timeTotal, double timeDelta);
 	ColorTypes GetRandomColor();
+	void GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g);
 };

@@ -1,31 +1,31 @@
-﻿Build started 1/29/2016 8:10:05 AM.
+﻿Build started 2/1/2016 8:58:39 AM.
      1>Project "C:\Users\cruzj6\Desktop\LearningDX\LearningDX\LearningDX.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /sdl /Od /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt GameLevel.cpp Level1.cpp Main.cpp SpriteSheet.cpp
-         Main.cpp
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\HPTimer.h(43): warning C4244: 'initializing' : conversion from '__int64' to 'double', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\HPTimer.h(49): warning C4244: 'initializing' : conversion from '__int64' to 'double', possible loss of data
-     1>Main.cpp(23): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /sdl /Od /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt GameController.cpp Level1.cpp Main.cpp
          Level1.cpp
      1>Level1.cpp(66): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
      1>Level1.cpp(70): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
      1>Level1.cpp(71): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
      1>Level1.cpp(72): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
      1>Level1.cpp(73): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(99): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(105): warning C4244: 'initializing' : conversion from 'const float' to 'int', possible loss of data
-     1>Level1.cpp(106): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(156): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(100): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(106): warning C4244: 'initializing' : conversion from 'const float' to 'int', possible loss of data
+     1>Level1.cpp(107): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
      1>Level1.cpp(157): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
      1>Level1.cpp(158): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(174): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(195): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(209): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(280): warning C4554: '|' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>Level1.cpp(159): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(179): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(201): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(220): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(330): warning C4554: '|' : check operator precedence for possible error; use parentheses to clarify precedence
+         Generating Code...
+         Compiling...
+         GameController.cpp
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\HPTimer.h(44): warning C4244: 'initializing' : conversion from '__int64' to 'double', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\HPTimer.h(52): warning C4244: 'initializing' : conversion from '__int64' to 'double', possible loss of data
          Generating Code...
          Skipping... (no relevant changes detected)
-         SpriteSheet.cpp
-         GameLevel.cpp
+         Main.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.exe" /INCREMENTAL /NOLOGO windowscodecs.lib dwrite.lib d2d1.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\cruzj6\Desktop\LearningDX\x64\Debug\LearningDX.lib" /MACHINE:X64 x64\Debug\GameController.obj
          x64\Debug\GameLevel.obj
@@ -38,4 +38,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.68
+Time Elapsed 00:00:01.42

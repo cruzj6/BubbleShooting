@@ -72,6 +72,7 @@ void Level1::LoadInitialLevelBalls()
 				newBall.currentLocationX = newBall.xDestination;
 				newBall.currentLocationY = newBall.yDestination;
 				newBall.exists = true;
+				newBall.color = GetRandomColor();
 				balls[i][j] = newBall;
 			}
 			else {
@@ -168,11 +169,15 @@ void Level1::Render()
 			{
 				for (int i = 0; i < NUM_ROWS; i++)//for each col
 				{
+					float r = 0;
+					float b = 0;
+					float g = 0;
 					ballObject* ball = &balls[j][i];
 					float circleRadius = CIRCLE_RADIUS;
 					if (ball->exists) {
+						GetColorRBG(balls[i][j].color, &r, &b, &g);
 						sprites->Draw(ball->currentLocationX - CIRCLE_RADIUS, ball->currentLocationY + y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
-						gfx->DrawCircle(ball->currentLocationX, ball->currentLocationY + y, circleRadius, 0.0, 0.0, 0xF, 1.0);
+						gfx->DrawCircle(ball->currentLocationX, ball->currentLocationY + y, circleRadius,r, g, b, 1.0);
 					}
 				}
 			}
@@ -188,6 +193,7 @@ void Level1::Render()
 		gfx->EndDraw();
 }
 
+//Renders the ball that is in the process on being fired
 void Level1::RenderFiringBall()
 {
 	if (firingBall)
@@ -218,7 +224,7 @@ void Level1::RenderBallArray()
 	}
 }
 
-void GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
+void Level1::GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
 {
 	switch (colorNum)
 	{
@@ -407,6 +413,6 @@ void Level1::DrawGrid()
 
 ColorTypes Level1::GetRandomColor()
 {
-	float randNum = rand() % ColorTypes::NUM_OPTIONS;
+	int randNum = rand() % ColorTypes::NUM_OPTIONS;
 	return (ColorTypes)randNum;
 }
