@@ -16,6 +16,8 @@ Graphics::~Graphics()
 		rendertarget->Release();
 	if (brush)
 		brush->Release();
+	if (writeFactory)
+		writeFactory->Release();
 }
 
 bool Graphics::Init(HWND windowHandle)
@@ -40,6 +42,8 @@ bool Graphics::Init(HWND windowHandle)
 		D2D1::HwndRenderTargetProperties(windowHandle, D2D1::SizeU(rect.right, rect.bottom)),
 		&rendertarget);
 
+	rendertarget->CreateSolidColorBrush(D2D1::ColorF(0x0, 0x0, 0x0, 1.0), &brush);
+
 	if (res != S_OK)
 		return false;
 
@@ -48,6 +52,7 @@ bool Graphics::Init(HWND windowHandle)
 
 void Graphics::ClearScreen(float r, float g, float b)
 {
+	//Set the entire renderTarget to the given color
 	rendertarget->Clear(D2D1::ColorF(r, g, b));
 }
 
@@ -77,10 +82,35 @@ void Graphics::ClearZone(float x, float y, float len, float width)
 }
 void Graphics::DrawCircle(float x, float y, float radius, float r, float g, float b, float a)
 {
-	rendertarget->CreateSolidColorBrush(D2D1::ColorF(r, g, b, a), &brush);
+	brush->SetColor(D2D1::ColorF(r, g, b, a));
 	rendertarget->DrawEllipse(D2D1::Ellipse(D2D1::Point2F(x, y), radius, radius), brush, 3.0f);
 }
 
+void Graphics::DrawRectangle(float x, float y, float ylen, float xwidth, float r, float g, float b, float a)
+{
+	D2D1_RECT_F rect;
+	rect.bottom = y + (ylen / 2);
+	rect.top = y - (ylen / 2);
+	rect.right = x + (xwidth / 2);
+	rect.left = x - (xwidth / 2);
+
+	brush->SetColor(D2D1::ColorF(r, g, b, a));
+	rendertarget->DrawRectangle(rect, brush, 1.0);
+
+}
+
+//Solid rectangle
+void Graphics::DrawBox(float x, float y, float ylen, float xwidth, float r, float g, float b, float a)
+{
+	D2D1_RECT_F rect;
+	rect.bottom = y + (ylen / 2);
+	rect.top = y - (ylen / 2);
+	rect.right = x + (xwidth / 2);
+	rect.left = x - (xwidth / 2);
+
+	brush->SetColor(D2D1::ColorF(r, g, b, a));
+	rendertarget->FillRectangle(rect, brush);
+}
 
 void Graphics::DrawLine(float xStart, float xFin, float yStart, float yFin, float r, float b, float g)
 {
@@ -90,16 +120,18 @@ void Graphics::DrawLine(float xStart, float xFin, float yStart, float yFin, floa
 	rendertarget->DrawLine(startPoint, endPoint, brush);
 }
 
-void Graphics::WriteText(WCHAR text, float l, float t, float ri, float bot)
+void Graphics::WriteText(wchar_t* text, float l, float t, float ri, float bot)
 {
-
 	IDWriteTextFormat* format;
-	writeFactory->CreateTextFormat(L"Helvetica", NULL, DWRITE_FONT_WEIGHT_BLACK, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20.0f, L"", &format);
-	wchar_t* test = L"Hello";
-	float stringSize = sizeof(test) / sizeof(wchar_t);
+	float stringSize = wcslen(text);
 	D2D1_RECT_F rect = D2D1::Rect(l, t, ri, bot);
-	brush->SetColor(D2D1::ColorF(0xF, 0xA, 0x3, 1.0f));
-	rendertarget->BeginDraw();
-	rendertarget->DrawTextA(test, stringSize, format, rect, brush);
-	rendertarget->EndDraw();
+
+	//Create our text format
+	writeFactory->CreateTextFormat(L"Helvetica", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20.0f, L"en-us", &format);
+	format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+	//Set our brush to black and draw our text
+	brush->SetColor(D2D1::ColorF(0x0, 0x0, 0x0, 1.0f));
+	rendertarget->DrawText(text, stringSize, format, rect, brush);
 }

@@ -3,3 +3,8 @@
 *.opensdf
 *.obj
 *.tlog
+*.exe
+LearningDX.v12.suo
+LearningDX.sdf
+*.obj
+*.pdb

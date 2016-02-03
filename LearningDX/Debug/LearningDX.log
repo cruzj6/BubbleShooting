@@ -1,23 +1,31 @@
-﻿Build started 2/1/2016 8:54:29 AM.
+﻿Build started 2/1/2016 11:58:23 AM.
      1>Project "C:\Users\cruzj6\Desktop\LearningDX\LearningDX\LearningDX.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Level1.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GameController.cpp GameLevel.cpp Graphics.cpp Level1.cpp Main.cpp SpriteSheet.cpp
          Level1.cpp
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(66): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(70): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(71): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(72): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(73): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(100): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(106): warning C4244: 'initializing' : conversion from 'const float' to 'int', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(107): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(157): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(158): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(159): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(179): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(201): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(220): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(330): warning C4554: '|' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(71): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(77): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(78): warning C4244: '=' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(79): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(80): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(108): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(115): warning C4244: 'initializing' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(116): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(167): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(168): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(169): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(189): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(215): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(234): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\level1.cpp(345): warning C4554: '|' : check operator precedence for possible error; use parentheses to clarify precedence
+         Graphics.cpp
+     1>c:\users\cruzj6\desktop\learningdx\learningdx\graphics.cpp(128): warning C4244: 'argument' : conversion from 'float' to 'UINT32', possible loss of data
+         Generating Code...
+         Skipping... (no relevant changes detected)
+         SpriteSheet.cpp
+         Main.cpp
+         GameLevel.cpp
+         GameController.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\cruzj6\Desktop\LearningDX\Debug\LearningDX.exe" /INCREMENTAL /NOLOGO dwrite.lib windowscodecs.lib d2d1.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"C:\Users\cruzj6\Desktop\LearningDX\Debug\LearningDX.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\cruzj6\Desktop\LearningDX\Debug\LearningDX.lib" /MACHINE:X86 Debug\GameController.obj
          Debug\GameLevel.obj
@@ -30,4 +38,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.83
+Time Elapsed 00:00:01.21

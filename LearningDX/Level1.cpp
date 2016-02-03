@@ -1,6 +1,7 @@
 #include "GameLevel.h"
 #include "Level1.h"
 #include <math.h>
+#include <sstream>
 #include <iostream>
 
 const float SPAWN_TIME= 5.0f;//In Seconds
@@ -32,11 +33,13 @@ float spawnCountDown;
 float ballFireXDirection;
 float ballFireYDirection;
 bool firingBall;
+bool isNoChain = true; //Used for the UpdatePopBalls() Recursive method
 	
 //Ball object pointers
 ballObject* bp = { 0 }; //Used for creating new balls after the initial balls
 ballObject** balls; //The array of balls in their final destination
 ballObject* bpFire = { 0 }; //Pointer to a ball object that is being fired as it is being fired
+ColorTypes nextShootColor;
 
 //Sets initial values, initializes initial ball objects to be
 //rendered at the start of the level, and allocates memory
@@ -59,13 +62,19 @@ void Level1::Load()
 //Loads the ball objects for starting out into the array
 void Level1::LoadInitialLevelBalls()
 {
+	//Initial next shoot color
+	nextShootColor = GetRandomColor();
+
 	for (int i = 0; i < NUM_COLS; i++)//For each col
 	{
 		for (int j = 0; j < NUM_ROWS; j++)//for each row
 		{
+			//Generate a random number to see if a ball will be generated for this spot on the screen
 			float randNum = rand() % 100;
 
+			//50% chance that it will be created
 			if (randNum > 50 && j < NUM_ROWS * PERCENT_OF_SCREEN_INIT_BALLS) {
+				//Create the new ball and initialize it's properties, setting exist to true so it will render
 				ballObject newBall;
 				newBall.yDestination = (CIRCLE_RADIUS * 2) * (j + 1);
 				newBall.xDestination = (CIRCLE_RADIUS * 2) * (i + 1);
@@ -76,6 +85,7 @@ void Level1::LoadInitialLevelBalls()
 				balls[i][j] = newBall;
 			}
 			else {
+				//initialize memory for ball that does not exist yet
 				ballObject newBall;
 				newBall.exists = false;
 				balls[i][j] = newBall;
@@ -99,12 +109,17 @@ void Level1::Update(double timeTotal, double timeDelta)
 	UpdateSpeedForTime(timeTotal, timeDelta);
 	spawnCountDown -= timeDelta;
 
+	//If the spawn counter is <= 0 create a new ball to spawn
 	if (spawnCountDown <= 0)
 	{
-		spawnCountDown = SPAWN_TIME;
 		ballObject* newBall = new ballObject();
 		int max = (X_RES / NUM_COLS);
 		float randomNum = (rand() % max);
+
+		//Deduct from timer
+		//TODO: Display timer?
+		spawnCountDown = SPAWN_TIME;
+
 		newBall->currentLocationX = randomNum * NUM_COLS;
 		newBall->currentLocationY = Y_RES;
 		newBall->transitioningIn = true;
@@ -129,7 +144,13 @@ void Level1::Update(double timeTotal, double timeDelta)
 		if (bpFire->currentLocationX >= X_RES || bpFire->currentLocationY <= 0.0f || shouldStop)
 		{
 			firingBall = false;
-			AddBallToArray(*bpFire);
+			bpFire->exists = true;
+			UpdatePopBalls(bpFire, NULL);
+			isNoChain = true;
+			if (bpFire->exists)
+			{
+				AddBallToArray(*bpFire);
+			}
 			delete bpFire;
 		}
 		else
@@ -152,6 +173,7 @@ void Level1::Update(double timeTotal, double timeDelta)
 
 }
 
+//Updates numbers, scaling them with the amount of time passed since last frame
 void Level1::UpdateSpeedForTime(double timeTotal, double timeDelta)
 {
 	FIRE_SPEED = FIRE_RATE * timeDelta;
@@ -186,11 +208,11 @@ void Level1::Render()
 		{//Render things for playing the level
 			RenderBallArray();
 			RenderFiringBall();
-				
 		}
 		DrawGrid();
+		RenderUI();
 		PrintBallArray();
-		gfx->EndDraw();
+		gfx->EndDraw();	
 }
 
 //Renders the ball that is in the process on being fired
@@ -198,8 +220,79 @@ void Level1::RenderFiringBall()
 {
 	if (firingBall)
 	{
+		float r;
+		float b;
+		float g;
+		GetColorRBG(bpFire->color, &r, &b, &g);
 		sprites->Draw(bpFire->currentLocationX - CIRCLE_RADIUS, bpFire->currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
-		gfx->DrawCircle(bpFire->currentLocationX, bpFire->currentLocationY, CIRCLE_RADIUS, 0.0, 0.0, 0xF, 1.0);
+		gfx->DrawCircle(bpFire->currentLocationX, bpFire->currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
+	}
+}
+
+//Calls each function that renders the UI for each frame
+void Level1::RenderUI()
+{
+	RenderNextColorDisplay();
+	RenderTimeToNewBall();
+}
+
+void Level1::RenderTimeToNewBall()
+{
+	//Build our string
+	std::wostringstream secs;
+	secs << static_cast<int>(spawnCountDown);
+	secs << " ";
+	secs << "Seconds till random ball";
+
+	//Convert it to WCHAR_T string
+	std::wstring ws = secs.str();
+	const WCHAR* secsWChar = ws.c_str();
+
+	//Cast it to non-const
+	WCHAR* nonConstStr = const_cast<WCHAR*>(secsWChar);
+
+	//Finally draw it
+	gfx->WriteText(nonConstStr, 300, 300, 600, 600);
+}
+
+//Renders the text and the Color diplay itself stating the color of the next ball
+//that will be shot
+void Level1::RenderNextColorDisplay()
+{
+	float xlen = 75.0f;
+	float ylen = 75.0f;
+	float xlocation = X_RES - 200 - (xlen / 2);
+	float ylocation = Y_RES - 10 - (ylen / 2);
+	wchar_t* text = GetStringFromColorType(nextShootColor);
+	//Write next color header and the color name itself
+	gfx->WriteText(L"Next Color: ", xlocation - (xlen), ylocation - (ylen * 2.5), xlocation + 100, ylocation + 50);
+	gfx->WriteText(text, xlocation - (xlen * 1.5), ylocation - (ylen * 2), xlocation + 100, ylocation + 50);
+
+	float r;
+	float b;
+	float g;
+
+	GetColorRBG(nextShootColor, &r, &b, &g);
+
+	gfx->DrawBox(xlocation, ylocation, ylen, xlen, r, g, b, 1.0);
+}
+
+wchar_t* Level1::GetStringFromColorType(ColorTypes color)
+{
+	switch (color)
+	{
+		case ColorTypes::BLUE:
+			return L"Blue";
+		case ColorTypes::GREEN:
+			return L"Green";
+		case ColorTypes::ORANGE:
+			return L"Orange";
+		case ColorTypes::RED:
+			return L"Red";
+		case ColorTypes::YELLOW:
+			return L"Yellow";
+		default:
+			return L"Error";
 	}
 }
 
@@ -226,12 +319,13 @@ void Level1::RenderBallArray()
 
 void Level1::GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
 {
+	//Colors are 0 - 1 scale per color (RGB)
 	switch (colorNum)
 	{
 		case ColorTypes::BLUE:
 			*r = 0x0;
 			*g = 0x0;
-			*b = 0xF;
+			*b = 1;
 			break;
 
 		case ColorTypes::GREEN:
@@ -240,9 +334,9 @@ void Level1::GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
 			*b = 0x0;
 			break;
 		case ColorTypes::ORANGE:
-			*r = 0xF;
-			*g = 0xF;
-			*b = 0x0;
+			*r = 1;
+			*g = 0.4;
+			*b = 0;
 			break;
 		case ColorTypes::RED:
 			*r = 0xF;
@@ -250,8 +344,8 @@ void Level1::GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
 			*b = 0x0;
 			break;
 		case ColorTypes::YELLOW:
-			*r = 0x0;
-			*g = 0x5;
+			*r = .8;
+			*g = 1;
 			*b = 0x0;
 			break;
 
@@ -274,12 +368,13 @@ void Level1::FireBall(float mouseX, float mouseY)
 	bpFire = new ballObject();
 	bpFire->currentLocationX = 400;
 	bpFire->currentLocationY = 600;
-}
-Level1::~Level1()
-{
-	delete balls;
-	delete bp;
-	delete bpFire;
+
+	//Copy the memory because were about to change the value at that address
+	memcpy(&bpFire->color, &nextShootColor, sizeof(ColorTypes));
+
+	//Randomize next color
+	nextShootColor = GetRandomColor();
+	
 }
 
 void Level1::UpdateNewBall(ballObject* theBall)
@@ -290,18 +385,7 @@ void Level1::UpdateNewBall(ballObject* theBall)
 		//It is done moving in now
 		theBall->transitioningIn = false;
 	}
-}
-
-void Level1::RenderNewSpawnBall(float ballXDest, float ballYDest, float frameYPos)
-{
-	gfx->BeginDraw();
-
-	float clearRadius = CIRCLE_RADIUS + 3.0f; //brush stroke is 3.0f on circles
-	gfx->ClearZoneCircle(ballXDest, ballYDest + frameYPos + Y_SPAWN_SPEED, clearRadius);
-	gfx->DrawCircle(ballXDest, ballYDest + frameYPos, CIRCLE_RADIUS, 0.0, 0.0, 0xF, 1.0);
-
-	gfx->EndDraw();
-}
+}	
 
 bool Level1::CheckBallShouldStop(ballObject* ball)
 {
@@ -353,8 +437,6 @@ bool Level1::CheckBallShouldStop(ballObject* ball)
 //they have a set position
 void Level1::AddBallToArray(ballObject &newBall)
 {
-	newBall.exists = true;
-	newBall.color = GetRandomColor();
 	for (int i = 0; i < NUM_COLS; i++)
 	{
 		for (int j = 0; j < NUM_ROWS; j++)
@@ -415,4 +497,62 @@ ColorTypes Level1::GetRandomColor()
 {
 	int randNum = rand() % ColorTypes::NUM_OPTIONS;
 	return (ColorTypes)randNum;
+}
+
+void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
+{
+	bool isNear = false;
+	for (int i = 0; i < NUM_COLS; i++)
+	{
+		for (int j = 0; j < NUM_ROWS; j++)
+		{
+			ballObject* placedBall = &balls[i][j];//The ball in the array we are checking against
+			if (placedBall != lastBall && placedBall != firedBall)
+			{
+				float placedXCenter = placedBall->currentLocationX;//The X center location of that ball
+				float placedYCenter = placedBall->currentLocationY;//" Y "
+				float buffer = 2.0f; //2px buffer in the zone
+				float diameter = CIRCLE_RADIUS * 2;//distance from center of one ball to center of the other when next to each other
+
+				if (placedBall->exists)
+				{
+					float curX = firedBall->currentLocationX;
+					float curY = firedBall->currentLocationY;
+
+					float distance = sqrt(pow(placedXCenter - curX, 2) + pow(placedYCenter - curY, 2));
+
+					bool shouldStop = distance <= ((CIRCLE_RADIUS * 2.0f) + 6.0f) && &balls[i][j] != firedBall;
+					shouldStop = shouldStop | curY <= 0; //Stop at top of screen
+					if (shouldStop)
+					{
+						isNear = true;
+					}
+					else
+					{
+						isNear = false;
+					}
+
+					//If same color and close, recursively check that one
+					if (isNear && placedBall->color == firedBall->color)
+					{
+						isNoChain = false;
+						UpdatePopBalls(&balls[i][j], firedBall);
+					}
+				}
+
+
+			}
+		}
+	}
+	if (!isNoChain)
+	{
+		firedBall->exists = false;
+	}
+}
+
+Level1::~Level1()
+{
+	delete balls;
+	delete bp;
+	delete bpFire;
 }
