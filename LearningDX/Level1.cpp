@@ -30,6 +30,7 @@ bool isEntry = true;
 
 //Random ball entry
 float spawnCountDown;
+float score = 0;
 	
 //Vars for a fired ball
 float ballFireXDirection;
@@ -51,6 +52,7 @@ void Level1::Load()
 	spawnCountDown = SPAWN_TIME;
 	sprites = new SpriteSheet(L"test.png", gfx);
 	UIArrow = new SpriteSheet(L"Aim_Arrow.png", gfx);
+	UIImage = new SpriteSheet(L"UIBar.png", gfx);
 
 	balls = new ballObject *[NUM_ROWS];
 	for (int i = 0; i < NUM_COLS; i++)
@@ -235,9 +237,11 @@ void Level1::RenderFiringBall()
 //Calls each function that renders the UI for each frame
 void Level1::RenderUI()
 {
+	UIImage->Draw(0, Y_RES / 5 * 4, X_RES, Y_RES / 5);
 	RenderNextColorDisplay();
 	RenderTimeToNewBall();
 	RenderUIArrow();
+	RenderScore();
 }
 
 void Level1::RenderUIArrow()
@@ -249,7 +253,7 @@ void Level1::RenderUIArrow()
 	float xNormDirec = (xVecStart - mouseXPos) / vectorLen;
 	float yNormDirec = (yVecStart - mouseYPos) / vectorLen;
 
-	float arrowLen = 300.0f;
+	float arrowLen = 200.0f;
 	float scale = arrowLen / UIArrow->GetBmpHeight();
 
 	//Rotate bitmap of arrow, width is NULL as the method will scale with height if x is null
@@ -274,7 +278,25 @@ void Level1::RenderTimeToNewBall()
 	WCHAR* nonConstStr = const_cast<WCHAR*>(secsWChar);
 
 	//Finally draw it
-	gfx->WriteText(nonConstStr, 300, 300, 600, 600);
+	gfx->WriteText(nonConstStr, 500, 300, 800, 600);
+}
+
+void Level1::RenderScore()
+{
+	//Build our string
+	std::wostringstream scoreTxt;
+
+	scoreTxt << "Score: " << static_cast<int>(score);
+
+	//Convert it to WCHAR_T string
+	std::wstring ws = scoreTxt.str();
+	const WCHAR* scoreWChar = ws.c_str();
+
+	//Cast it to non-const
+	WCHAR* nonConstStr = const_cast<WCHAR*>(scoreWChar);
+
+	//Finally draw it
+	gfx->WriteText(nonConstStr, 100, 300, 300, 600);
 }
 
 //Renders the text and the Color diplay itself stating the color of the next ball
@@ -566,6 +588,7 @@ void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 	}
 	if (!isNoChain)
 	{
+		score += 500;//TODO: Combo multi
 		firedBall->exists = false;
 	}
 }

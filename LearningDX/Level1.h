@@ -24,6 +24,8 @@ struct ballObject
 
 class Level1 : public GameLevel
 {
+
+	SpriteSheet* UIImage;
 public:
 	Level1(Graphics* _gfx)
 	{
@@ -55,4 +57,5 @@ private:
 	void UpdatePopBalls(ballObject* firedBall, ballObject* lastBall);
 	void RenderTimeToNewBall();
 	void RenderUIArrow();
+	void RenderScore();
 };
