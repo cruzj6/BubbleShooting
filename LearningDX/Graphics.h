@@ -36,6 +36,7 @@ class Graphics
 		void WriteText(WCHAR* text, float l, float t, float ri, float bot);
 		void DrawRectangle(float x, float y, float len, float width, float r, float g, float b, float a);
 		void DrawBox(float x, float y, float ylen, float xwidth, float r, float g, float b, float a);
+		
 	private:
 
 };

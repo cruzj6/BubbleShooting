@@ -1,6 +1,7 @@
 #include "GameLevel.h"
 #include "Level1.h"
 #include <math.h>
+#include <cmath>
 #include <sstream>
 #include <iostream>
 
@@ -14,6 +15,7 @@ const float GRID_SPACE_SIZE = 50.0f;
 const float X_RES = 800;
 const float Y_RES = 600;
 const float PERCENT_OF_SCREEN_INIT_BALLS = 0.3f;
+const float pi = 3.14;
 
 //Values that need to be updated based on time, not frames
 //These are set at runtime each frame
@@ -48,6 +50,7 @@ void Level1::Load()
 {
 	spawnCountDown = SPAWN_TIME;
 	sprites = new SpriteSheet(L"test.png", gfx);
+	UIArrow = new SpriteSheet(L"Aim_Arrow.png", gfx);
 
 	balls = new ballObject *[NUM_ROWS];
 	for (int i = 0; i < NUM_COLS; i++)
@@ -211,7 +214,7 @@ void Level1::Render()
 		}
 		DrawGrid();
 		RenderUI();
-		PrintBallArray();
+	//	PrintBallArray();
 		gfx->EndDraw();	
 }
 
@@ -234,6 +237,25 @@ void Level1::RenderUI()
 {
 	RenderNextColorDisplay();
 	RenderTimeToNewBall();
+	RenderUIArrow();
+}
+
+void Level1::RenderUIArrow()
+{
+	float xVecStart = X_RES / 2;
+	float yVecStart = Y_RES;
+	float vectorLen = sqrt(pow(xVecStart - mouseXPos, 2) + pow(Y_RES - mouseYPos, 2));
+
+	float xNormDirec = (xVecStart - mouseXPos) / vectorLen;
+	float yNormDirec = (yVecStart - mouseYPos) / vectorLen;
+
+	float arrowLen = 300.0f;
+	float scale = arrowLen / UIArrow->GetBmpHeight();
+
+	//Rotate bitmap of arrow, width is NULL as the method will scale with height if x is null
+	//See: http://www.gamedev.net/topic/605182-direct2d-flipping-bitmaps/
+	UIArrow->DrawRotatedBitmap(X_RES / 2, Y_RES, (atan2(yNormDirec, xNormDirec)/pi * 180) - 90, NULL, arrowLen);
+
 }
 
 void Level1::RenderTimeToNewBall()
@@ -259,21 +281,19 @@ void Level1::RenderTimeToNewBall()
 //that will be shot
 void Level1::RenderNextColorDisplay()
 {
-	float xlen = 75.0f;
-	float ylen = 75.0f;
-	float xlocation = X_RES - 200 - (xlen / 2);
-	float ylocation = Y_RES - 10 - (ylen / 2);
-	wchar_t* text = GetStringFromColorType(nextShootColor);
-	//Write next color header and the color name itself
-	gfx->WriteText(L"Next Color: ", xlocation - (xlen), ylocation - (ylen * 2.5), xlocation + 100, ylocation + 50);
-	gfx->WriteText(text, xlocation - (xlen * 1.5), ylocation - (ylen * 2), xlocation + 100, ylocation + 50);
-
 	float r;
 	float b;
 	float g;
+	float xlen = 75.0f;
+	float ylen = 75.0f;
+	float xlocation = X_RES - 200 - (xlen / 2);
+	float ylocation = Y_RES - 10 - (ylen / 2);	
+	wchar_t* text = GetStringFromColorType(nextShootColor);
 
+	//Write next color header and the color name itself
+	gfx->WriteText(L"Next Color: ", xlocation - (xlen), ylocation - (ylen * 2.5), xlocation + 100, ylocation + 50);
+	gfx->WriteText(text, xlocation - (xlen * 1.5), ylocation - (ylen * 2), xlocation + 100, ylocation + 50);
 	GetColorRBG(nextShootColor, &r, &b, &g);
-
 	gfx->DrawBox(xlocation, ylocation, ylen, xlen, r, g, b, 1.0);
 }
 
@@ -548,6 +568,12 @@ void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 	{
 		firedBall->exists = false;
 	}
+}
+
+void Level1::SetCurrentMousePos(float x, float y)
+{
+	mouseXPos = x;
+	mouseYPos = y;
 }
 
 Level1::~Level1()

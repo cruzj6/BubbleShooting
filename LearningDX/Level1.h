@@ -34,6 +34,7 @@ public:
 	void Render() override;
 	void Update(double timeTotal, double timeDelta) override;
 	void FireBall(float mouseX, float mouseY);
+	void SetCurrentMousePos(float x, float y);
 	~Level1();
 
 private:
@@ -53,4 +54,5 @@ private:
 	wchar_t* GetStringFromColorType(ColorTypes color);
 	void UpdatePopBalls(ballObject* firedBall, ballObject* lastBall);
 	void RenderTimeToNewBall();
+	void RenderUIArrow();
 };
