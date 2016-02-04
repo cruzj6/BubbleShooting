@@ -6,15 +6,18 @@
 #include <iostream>
 
 const float SPAWN_TIME= 5.0f;//In Seconds
-const float CIRCLE_RADIUS = 20.0f;
-const float Y_SPAWN_RATE = 1000.0f;//For entry transition and random new balls
+float X_RES = 800;//Keep these Res 4:3
+float Y_RES = 600;//----TODO: Changed these to get render target size-----
+				  //Test it
+				  //This needs to account for different native res than render tar res when using mouse coords
+				  //Maybe window at start to request Res selection 4:3
 const int NUM_ROWS = 20;
 const int NUM_COLS = 20;
+const float CIRCLE_RADIUS = (X_RES / NUM_COLS)/2;
+const float Y_SPAWN_RATE = 1000.0f;//For entry transition and random new balls
 const float FIRE_RATE = 1000.0f;
 const float GRID_SPACE_SIZE = 50.0f;
-const float X_RES = 800;
-const float Y_RES = 600;
-const float PERCENT_OF_SCREEN_INIT_BALLS = 0.3f;
+const float PERCENT_OF_SCREEN_INIT_BALLS = 0.3f;//What percent of Y space do they go to
 const float pi = 3.14;
 
 //Values that need to be updated based on time, not frames
@@ -43,6 +46,10 @@ ballObject* bp = { 0 }; //Used for creating new balls after the initial balls
 ballObject** balls; //The array of balls in their final destination
 ballObject* bpFire = { 0 }; //Pointer to a ball object that is being fired as it is being fired
 ColorTypes nextShootColor;
+
+//Temp random num funcs
+float randomNum(float low, float high);
+float hash3(float num0, float num1, float num2);
 
 //Sets initial values, initializes initial ball objects to be
 //rendered at the start of the level, and allocates memory
@@ -75,7 +82,7 @@ void Level1::LoadInitialLevelBalls()
 		for (int j = 0; j < NUM_ROWS; j++)//for each row
 		{
 			//Generate a random number to see if a ball will be generated for this spot on the screen
-			float randNum = rand() % 100;
+			float randNum = randomNum(0, 100); //% 100;
 
 			//50% chance that it will be created
 			if (randNum > 50 && j < NUM_ROWS * PERCENT_OF_SCREEN_INIT_BALLS) {
@@ -108,9 +115,29 @@ void Level1::UnLoad()
 	delete sprites;
 }
 
+float randomNum(float low, float high)
+{
+	float pid = GetCurrentProcessId();
+	SYSTEMTIME tod;
+	GetSystemTime(&tod);
+	return static_cast<int>(hash3(tod.wMilliseconds, pid, rand()))% 100;
+}
+
+//TODO: Make hash better
+float hash3(float num0, float num1, float num2)
+{
+	int num = static_cast<int>(num0 + num1) << static_cast<int>(num2);
+	num ^= static_cast<int>(num0);
+	return num;
+}
+
 //Update values every frame
 void Level1::Update(double timeTotal, double timeDelta)
 {
+	//Update X and Y resolutions in the context of rendering
+	X_RES = gfx->GetRenderTarget()->GetSize().width;
+	Y_RES = gfx->GetRenderTarget()->GetSize().height;
+
 	UpdateSpeedForTime(timeTotal, timeDelta);
 	spawnCountDown -= timeDelta;
 
@@ -253,7 +280,7 @@ void Level1::RenderUIArrow()
 	float xNormDirec = (xVecStart - mouseXPos) / vectorLen;
 	float yNormDirec = (yVecStart - mouseYPos) / vectorLen;
 
-	float arrowLen = 200.0f;
+	float arrowLen = Y_RES * (0.5);
 	float scale = arrowLen / UIArrow->GetBmpHeight();
 
 	//Rotate bitmap of arrow, width is NULL as the method will scale with height if x is null
@@ -408,8 +435,8 @@ void Level1::FireBall(float mouseX, float mouseY)
 	ballFireXDirection =  (mouseX - xCenter) / vectorLen;
 	ballFireYDirection = (Y_RES - mouseY) / vectorLen;
 	bpFire = new ballObject();
-	bpFire->currentLocationX = 400;
-	bpFire->currentLocationY = 600;
+	bpFire->currentLocationX = X_RES/2;
+	bpFire->currentLocationY = Y_RES;
 
 	//Copy the memory because were about to change the value at that address
 	memcpy(&bpFire->color, &nextShootColor, sizeof(ColorTypes));
@@ -525,13 +552,13 @@ void Level1::DrawGrid()
 	float numVert = X_RES / GRID_SPACE_SIZE;
 	for (int i = 0; i < numVert; i++)
 	{
-		gfx->DrawLine(GRID_SPACE_SIZE * (i + 1), GRID_SPACE_SIZE * (i + 1), 0, 600, 0xF, 0x0, 0x0);
+		gfx->DrawLine(GRID_SPACE_SIZE * (i + 1), GRID_SPACE_SIZE * (i + 1), 0, Y_RES, 0xF, 0x0, 0x0);
 	}
 
 	float numHoriz = Y_RES / GRID_SPACE_SIZE;
 	for (int j = 0; j < numHoriz; j++)
 	{
-		gfx->DrawLine(0.0f, 800, GRID_SPACE_SIZE * (j + 1), GRID_SPACE_SIZE * (j + 1), 0xF, 0x0, 0x0);
+		gfx->DrawLine(0.0f, X_RES, GRID_SPACE_SIZE * (j + 1), GRID_SPACE_SIZE * (j + 1), 0xF, 0x0, 0x0);
 	}
 }
 
