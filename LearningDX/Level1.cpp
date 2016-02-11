@@ -5,15 +5,10 @@
 #include <sstream>
 #include <iostream>
 
+//Constants
 const float SPAWN_TIME= 5.0f;//In Seconds
-float X_RES = 800;//Keep these Res 4:3
-float Y_RES = 600;//----TODO: Changed these to get render target size-----
-				  //Test it
-				  //This needs to account for different native res than render tar res when using mouse coords
-				  //Maybe window at start to request Res selection 4:3
 const int NUM_ROWS = 20;
 const int NUM_COLS = 20;
-const float CIRCLE_RADIUS = (X_RES / NUM_COLS)/2;
 const float Y_SPAWN_RATE = 1000.0f;//For entry transition and random new balls
 const float FIRE_RATE = 1000.0f;
 const float GRID_SPACE_SIZE = 50.0f;
@@ -25,6 +20,12 @@ const float pi = 3.14;
 float FIRE_SPEED;
 float Y_SPAWN_SPEED;
 float SPAWN_RATE;
+float X_RES = 800;//Keep these Res 4:3
+float Y_RES = 600;//----TODO: Changed these to get render target size-----
+float CIRCLE_RADIUS = (X_RES / NUM_COLS) / 2;
+//Test it
+//This needs to account for different native res than render tar res when using mouse coords
+//Maybe window at start to request Res selection 4:3
 
 //Entry Transition vars
 float y = Y_RES;
@@ -40,12 +41,14 @@ float ballFireXDirection;
 float ballFireYDirection;
 bool firingBall;
 bool isNoChain = true; //Used for the UpdatePopBalls() Recursive method
+bool isNoMultiChain = true;
 	
 //Ball object pointers
 ballObject* bp = { 0 }; //Used for creating new balls after the initial balls
 ballObject** balls; //The array of balls in their final destination
 ballObject* bpFire = { 0 }; //Pointer to a ball object that is being fired as it is being fired
 ColorTypes nextShootColor;
+
 
 //Temp random num funcs
 float randomNum(float low, float high);
@@ -57,9 +60,11 @@ float hash3(float num0, float num1, float num2);
 void Level1::Load()
 {
 	spawnCountDown = SPAWN_TIME;
-	sprites = new SpriteSheet(L"test.png", gfx);
+	lipStick = new SpriteSheet(L"lipstick.png",gfx);
 	UIArrow = new SpriteSheet(L"Aim_Arrow.png", gfx);
+	avacadoImg = new SpriteSheet(L"avacado.png", gfx);
 	UIImage = new SpriteSheet(L"UIBar.png", gfx);
+	backGround = new SpriteSheet(L"unicornbkg.jpg", gfx);
 
 	balls = new ballObject *[NUM_ROWS];
 	for (int i = 0; i < NUM_COLS; i++)
@@ -112,7 +117,7 @@ void Level1::UnLoad()
 	delete bp;
 	delete bpFire;
 	delete balls;
-	delete sprites;
+	delete lipStick;
 }
 
 float randomNum(float low, float high)
@@ -134,7 +139,7 @@ float hash3(float num0, float num1, float num2)
 //Update values every frame
 void Level1::Update(double timeTotal, double timeDelta)
 {
-	//Update X and Y resolutions in the context of rendering
+	//Update X and Y resolutions dynamically with render target resolution
 	X_RES = gfx->GetRenderTarget()->GetSize().width;
 	Y_RES = gfx->GetRenderTarget()->GetSize().height;
 
@@ -149,7 +154,6 @@ void Level1::Update(double timeTotal, double timeDelta)
 		float randomNum = (rand() % max);
 
 		//Deduct from timer
-		//TODO: Display timer?
 		spawnCountDown = SPAWN_TIME;
 
 		newBall->currentLocationX = randomNum * NUM_COLS;
@@ -179,6 +183,8 @@ void Level1::Update(double timeTotal, double timeDelta)
 			bpFire->exists = true;
 			UpdatePopBalls(bpFire, NULL);
 			isNoChain = true;
+			isNoMultiChain = true;
+
 			if (bpFire->exists)
 			{
 				AddBallToArray(*bpFire);
@@ -217,8 +223,10 @@ void Level1::Render()
 {
 		//If no message lets update
 		gfx->BeginDraw();
+
+		gfx->ClearScreen(0xF, 0xF, 0xF);
+		backGround->Draw(0, 0, X_RES, Y_RES);
 		if (isEntry){//Render our entry transition if this is the entry time
-			gfx->ClearScreen(0xF, 0xF, 0xF);
 			for (int j = 0; j < NUM_COLS; j++)//For each row
 			{
 				for (int i = 0; i < NUM_ROWS; i++)//for each col
@@ -230,7 +238,7 @@ void Level1::Render()
 					float circleRadius = CIRCLE_RADIUS;
 					if (ball->exists) {
 						GetColorRBG(balls[i][j].color, &r, &b, &g);
-						sprites->Draw(ball->currentLocationX - CIRCLE_RADIUS, ball->currentLocationY + y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
+						lipStick->Draw(ball->currentLocationX - CIRCLE_RADIUS, ball->currentLocationY + y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
 						gfx->DrawCircle(ball->currentLocationX, ball->currentLocationY + y, circleRadius,r, g, b, 1.0);
 					}
 				}
@@ -241,7 +249,7 @@ void Level1::Render()
 			RenderBallArray();
 			RenderFiringBall();
 		}
-		DrawGrid();
+		//DrawGrid();
 		RenderUI();
 	//	PrintBallArray();
 		gfx->EndDraw();	
@@ -256,7 +264,8 @@ void Level1::RenderFiringBall()
 		float b;
 		float g;
 		GetColorRBG(bpFire->color, &r, &b, &g);
-		sprites->Draw(bpFire->currentLocationX - CIRCLE_RADIUS, bpFire->currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
+		DrawImageColor(bpFire->color, bpFire->currentLocationX - CIRCLE_RADIUS,
+			bpFire->currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
 		gfx->DrawCircle(bpFire->currentLocationX, bpFire->currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
 	}
 }
@@ -305,7 +314,7 @@ void Level1::RenderTimeToNewBall()
 	WCHAR* nonConstStr = const_cast<WCHAR*>(secsWChar);
 
 	//Finally draw it
-	gfx->WriteText(nonConstStr, 500, 300, 800, 600);
+	gfx->WriteText(nonConstStr, X_RES - 150, Y_RES - Y_RES/6, X_RES -10, Y_RES);
 }
 
 void Level1::RenderScore()
@@ -323,7 +332,7 @@ void Level1::RenderScore()
 	WCHAR* nonConstStr = const_cast<WCHAR*>(scoreWChar);
 
 	//Finally draw it
-	gfx->WriteText(nonConstStr, 100, 300, 300, 600);
+	gfx->WriteText(nonConstStr, (X_RES/9) * 2, Y_RES - Y_RES/6, ((X_RES/9) * 2) + 100, Y_RES);
 }
 
 //Renders the text and the Color diplay itself stating the color of the next ball
@@ -340,7 +349,7 @@ void Level1::RenderNextColorDisplay()
 	wchar_t* text = GetStringFromColorType(nextShootColor);
 
 	//Write next color header and the color name itself
-	gfx->WriteText(L"Next Color: ", xlocation - (xlen), ylocation - (ylen * 2.5), xlocation + 100, ylocation + 50);
+	gfx->WriteText(L"Fire-Color ", xlocation - (xlen), ylocation - (ylen * 2.5), xlocation + 100, ylocation + 50);
 	gfx->WriteText(text, xlocation - (xlen * 1.5), ylocation - (ylen * 2), xlocation + 100, ylocation + 50);
 	GetColorRBG(nextShootColor, &r, &b, &g);
 	gfx->DrawBox(xlocation, ylocation, ylen, xlen, r, g, b, 1.0);
@@ -371,7 +380,6 @@ void Level1::RenderBallArray()
 	float g = 0;
 	float b = 0;
 
-	gfx->ClearScreen(0xF, 0xF, 0xF);
 	for (int i = 0; i < NUM_COLS; i++)
 	{
 		for (int j = 0; j < NUM_ROWS; j++)
@@ -379,10 +387,32 @@ void Level1::RenderBallArray()
 			if (balls[i][j].exists)
 			{
 				GetColorRBG(balls[i][j].color, &r, &b, &g);
-				sprites->Draw(balls[i][j].currentLocationX - CIRCLE_RADIUS, balls[i][j].currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
+				DrawImageColor(balls[i][j].color, balls[i][j].currentLocationX - CIRCLE_RADIUS,
+					balls[i][j].currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2 , CIRCLE_RADIUS * 2);
 				gfx->DrawCircle(balls[i][j].currentLocationX, balls[i][j].currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
 			}
 		}
+	}
+}
+
+void Level1::DrawImageColor(ColorTypes color,float x,float y, float width, float height)
+{
+	switch (color)
+	{
+		case ColorTypes::RED:
+			lipStick->Draw(x, y, width, height);
+			break;
+
+		case ColorTypes::BLUE:
+
+		case ColorTypes::ORANGE:
+
+		case ColorTypes::YELLOW:
+
+		case ColorTypes::GREEN:
+			avacadoImg->Draw(x, y, width, height);
+		default:
+			return;
 	}
 }
 
@@ -443,7 +473,6 @@ void Level1::FireBall(float mouseX, float mouseY)
 
 	//Randomize next color
 	nextShootColor = GetRandomColor();
-	
 }
 
 void Level1::UpdateNewBall(ballObject* theBall)
@@ -456,11 +485,10 @@ void Level1::UpdateNewBall(ballObject* theBall)
 	}
 }	
 
+//Checks if ball is colliding with another ball (in ball array, that exists = true)
 bool Level1::CheckBallShouldStop(ballObject* ball)
 {
-	//TODO: DISTANCE JOEY YOU DUMB SHIT
-	bool isXNear = false;
-	bool isYNear = false;
+	bool isNear = false;
 
 	for (int i = 0; i < NUM_COLS; i++)
 	{
@@ -483,23 +511,21 @@ bool Level1::CheckBallShouldStop(ballObject* ball)
 				shouldStop = shouldStop | curY <= 0; //Stop at top of screen
 				if (shouldStop)
 				{
-					isXNear = true;
-					isYNear = true;
+					isNear = true;
 				}
-				if (!(isXNear && isYNear))
+				if (!(isNear))
 				{
-					isXNear = false;
-					isYNear = false;
+					isNear = false;
 				}
 			}
 		}
 	}
 
-	return isXNear && isYNear;
+	return isNear;
 }
 
-//Adds the ball to the array, and sets it to existing
-//Being in this array means final position for the ball
+//Adds the ball to the array of collision detection (existing in world)
+//Being in this array GENERALLY means final position for the ball
 //==========================================================================================
 //TODO: TEMP! This function sets the color of the ball, I need to set
 //up a new function that all balls are initialized in to funnel them into one place before
@@ -568,6 +594,7 @@ ColorTypes Level1::GetRandomColor()
 	return (ColorTypes)randNum;
 }
 
+
 void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 {
 	bool isNear = false;
@@ -604,6 +631,10 @@ void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 					//If same color and close, recursively check that one
 					if (isNear && placedBall->color == firedBall->color)
 					{
+						if (isNoChain == false)
+						{
+							isNoMultiChain = false;
+						}
 						isNoChain = false;
 						UpdatePopBalls(&balls[i][j], firedBall);
 					}
@@ -613,7 +644,7 @@ void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 			}
 		}
 	}
-	if (!isNoChain)
+	if (!isNoMultiChain)
 	{
 		score += 500;//TODO: Combo multi
 		firedBall->exists = false;

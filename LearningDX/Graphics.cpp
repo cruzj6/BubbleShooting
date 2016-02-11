@@ -127,7 +127,7 @@ void Graphics::WriteText(wchar_t* text, float l, float t, float ri, float bot)
 	D2D1_RECT_F rect = D2D1::Rect(l, t, ri, bot);
 
 	//Create our text format
-	writeFactory->CreateTextFormat(L"Helvetica", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20.0f, L"en-us", &format);
+	writeFactory->CreateTextFormat(L"Helvetica", NULL, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20.0f, L"en-us", &format);
 	format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 	format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 

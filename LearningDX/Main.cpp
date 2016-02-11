@@ -27,8 +27,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			level1->SetCurrentMousePos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 			return 0;
 
+		case WM_QUIT:
+			PostQuitMessage(0);
+			exit(0);
+			return 0;
+
 		case WM_DESTROY:
 			PostQuitMessage(0);
+			exit(0);
 			return 0;
 
 		default: //Default window processing procedure, ensures all messages are processed

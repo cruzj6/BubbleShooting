@@ -5,7 +5,6 @@
 class GameLevel
 {
 protected: 
-	SpriteSheet* sprites;
 	SpriteSheet* UIArrow;
 	static Graphics* gfx;
 	float mouseXPos;
