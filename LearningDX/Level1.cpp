@@ -5,6 +5,14 @@
 #include <sstream>
 #include <iostream>
 
+/**
+*Created by Joseph Cruz
+*
+*This class will be refactored into 2 classes, one for rendering,
+*one for updating the model...
+*
+*/
+
 //Constants
 const float SPAWN_TIME= 5.0f;//In Seconds
 const int NUM_ROWS = 20;
@@ -37,11 +45,12 @@ float spawnCountDown;
 float score = 0;
 	
 //Vars for a fired ball
-float ballFireXDirection;
-float ballFireYDirection;
+double ballFireXDirection;
+double ballFireYDirection;
 bool firingBall;
 bool isNoChain = true; //Used for the UpdatePopBalls() Recursive method
 bool isNoMultiChain = true;
+int colorCounter = 0;
 	
 //Ball object pointers
 ballObject* bp = { 0 }; //Used for creating new balls after the initial balls
@@ -82,7 +91,7 @@ void Level1::Load()
 void Level1::LoadInitialLevelBalls()
 {
 	//Initial next shoot color
-	nextShootColor = GetRandomColor();
+	nextShootColor = GetNextColor();
 
 	for (int i = 0; i < NUM_COLS; i++)//For each col
 	{
@@ -182,12 +191,28 @@ void Level1::Update(double timeTotal, double timeDelta)
 	if (firingBall)
 	{
 		bool shouldStop = CheckBallShouldStop(bpFire);
+
+		if (bpFire->currentLocationX <= 0 && ballFireXDirection < 0)
+		{
+			//If we hit a wall bounce
+			ballFireXDirection = 0 - ballFireXDirection;
+		}
+		if (bpFire->currentLocationX >= X_RES && ballFireXDirection > 0)
+		{
+			ballFireXDirection = 0 - ballFireXDirection;
+		}
+
 		//Stop making the ball if it is in a good spot
-		if (bpFire->currentLocationX >= X_RES || bpFire->currentLocationY <= 0.0f || shouldStop)
+		if (bpFire->currentLocationY <= 0.0f || shouldStop)
 		{
 			firingBall = false;
 			bpFire->exists = true;
+
+			//Pop balls if we need to and check if they won
+			//TODO: do something if they win
 			UpdatePopBalls(bpFire, NULL);
+			bool isWinner = CheckIfWinner();
+
 			isNoChain = true;
 			isNoMultiChain = true;
 
@@ -199,6 +224,9 @@ void Level1::Update(double timeTotal, double timeDelta)
 		}
 		else
 		{
+			//TODO: refactor direction into ballObject, can also be used for random
+			//spawn then
+
 			//Update the ball being fired
 			bpFire->currentLocationX += ballFireXDirection * (FIRE_SPEED);
 			bpFire->currentLocationY -= ballFireYDirection * (FIRE_SPEED);
@@ -278,7 +306,7 @@ void Level1::RenderFiringBall()
 
 void Level1::RenderWinner()
 {
-
+	//TODO
 }
 
 //Calls each function that renders the UI for each frame
@@ -293,15 +321,15 @@ void Level1::RenderUI()
 
 void Level1::RenderUIArrow()
 {
+	//Get the middle of the screen coords and length of arrow
 	float xVecStart = X_RES / 2;
 	float yVecStart = Y_RES;
 	float vectorLen = sqrt(pow(xVecStart - mouseXPos, 2) + pow(Y_RES - mouseYPos, 2));
 
+	//Get the direction based on mouse position (normalized vector)
 	float xNormDirec = (xVecStart - mouseXPos) / vectorLen;
 	float yNormDirec = (yVecStart - mouseYPos) / vectorLen;
-
 	float arrowLen = Y_RES * (0.5);
-	float scale = arrowLen / UIArrow->GetBmpHeight();
 
 	//Rotate bitmap of arrow, width is NULL as the method will scale with height if x is null
 	//See: http://www.gamedev.net/topic/605182-direct2d-flipping-bitmaps/
@@ -397,7 +425,10 @@ void Level1::RenderBallArray()
 		{
 			if (balls[i][j].exists)
 			{
+				//Get the rgb based on color enum assignment
 				GetColorRBG(balls[i][j].color, &r, &b, &g);
+
+				//Draw the ball and the image associated with that color
 				gfx->DrawCircle(balls[i][j].currentLocationX, balls[i][j].currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
 				DrawImageColor(balls[i][j].color, balls[i][j].currentLocationX - CIRCLE_RADIUS,
 					balls[i][j].currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2 , CIRCLE_RADIUS * 2);
@@ -446,7 +477,7 @@ void Level1::GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
 
 		case ColorTypes::GREEN:
 			*r = 0x0;
-			*g = 0xF;
+			*g = 0x1;
 			*b = 0x0;
 			break;
 		case ColorTypes::ORANGE:
@@ -455,7 +486,7 @@ void Level1::GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
 			*b = 0;
 			break;
 		case ColorTypes::RED:
-			*r = 0xF;
+			*r = 0x1;
 			*g = 0x0;
 			*b = 0x0;
 			break;
@@ -475,23 +506,30 @@ void Level1::GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g)
 
 void Level1::FireBall(float mouseX, float mouseY)
 {
-	float xCenter = X_RES / 2;
-	float vectorLen = sqrt(pow(xCenter - mouseX, 2) + pow(Y_RES - mouseY, 2));
+	//Only occur if one if not currently in progress
+	if (!firingBall)
+	{
+		float xCenter = X_RES / 2;
+		float vectorLen = sqrt(pow(xCenter - mouseX, 2) + pow(Y_RES - mouseY, 2));
 
-	firingBall = true;
-	ballFireXDirection =  (mouseX - xCenter) / vectorLen;
-	ballFireYDirection = (Y_RES - mouseY) / vectorLen;
-	bpFire = new ballObject();
-	bpFire->currentLocationX = X_RES/2;
-	bpFire->currentLocationY = Y_RES;
+		firingBall = true;
+		ballFireXDirection = (mouseX - xCenter) / vectorLen;
+		ballFireYDirection = (Y_RES - mouseY) / vectorLen;
 
-	//Copy the memory because were about to change the value at that address
-	memcpy(&bpFire->color, &nextShootColor, sizeof(ColorTypes));
+		//Create new ball object
+		bpFire = new ballObject();
+		bpFire->currentLocationX = X_RES / 2;
+		bpFire->currentLocationY = Y_RES;
 
-	//Randomize next color
-	nextShootColor = GetRandomColor();
+		//Copy the memory because were about to change the value at that address
+		memcpy(&bpFire->color, &nextShootColor, sizeof(ColorTypes));
+
+		//Get the next color
+		nextShootColor = GetNextColor();
+	}
 }
 
+//TODO: refactor this, we can do this elsewhere
 void Level1::UpdateNewBall(ballObject* theBall)
 {
 	theBall->currentLocationY -= Y_SPAWN_SPEED;
@@ -526,6 +564,7 @@ bool Level1::CheckBallShouldStop(ballObject* ball)
 
 				bool shouldStop = distance <= ((CIRCLE_RADIUS * 2.0f)) && &balls[i][j] != ball;
 				shouldStop = shouldStop || curY <= 0; //Stop at top of screen
+
 				if (shouldStop)
 				{
 					isNear = true;
@@ -595,6 +634,7 @@ void Level1::AddBallToArray(ballObject &newBall)
 	}
 }
 
+//For debug, uncomment code in main for showing console to see default in and out stream displayed
 void Level1::PrintBallArray()
 {
 	int numExistBalls = 0;
@@ -637,13 +677,25 @@ void Level1::DrawGrid()
 	}
 }
 
+ColorTypes Level1::GetNextColor()
+{
+	if (colorCounter == ColorTypes::NUM_OPTIONS)
+	{
+		colorCounter = 0;
+	}
+	ColorTypes curColor = (ColorTypes)colorCounter;
+	colorCounter++;
+
+	return curColor;
+}
+
 ColorTypes Level1::GetRandomColor()
 {
 	int randNum = rand() % ColorTypes::NUM_OPTIONS;
 	return (ColorTypes)randNum;
 }
 
-
+//Pop the balls that should be popped this frame
 void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 {
 	bool isNear = false;
@@ -666,8 +718,8 @@ void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 
 					float distance = sqrt(pow(placedXCenter - curX, 2) + pow(placedYCenter - curY, 2));
 
-					bool shouldStop = distance <= ((CIRCLE_RADIUS * 2.0f) + 20.0f) && &balls[i][j] != firedBall;
-					shouldStop = shouldStop | curY <= 0; //Stop at top of screen
+					bool shouldStop = distance <= ((CIRCLE_RADIUS * 2.0f) + 15.0f) && &balls[i][j] != firedBall;
+					shouldStop = shouldStop || curY <= 0; //Stop at top of screen
 					if (shouldStop)
 					{
 						isNear = true;
@@ -700,6 +752,23 @@ void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 	}
 }
 
+//Returns true if there are no more balls to pop
+bool Level1::CheckIfWinner()
+{
+	for (int i = 0; i < NUM_COLS; i++)
+	{
+		for (int j = 0; j < NUM_ROWS; j++)
+		{
+			if (balls[i][j].exists == true)
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 void Level1::SetCurrentMousePos(float x, float y)
 {
 	mouseXPos = x;
@@ -708,7 +777,13 @@ void Level1::SetCurrentMousePos(float x, float y)
 
 Level1::~Level1()
 {
-	delete balls;
 	delete bp;
 	delete bpFire;
+	delete balls;
+	delete redImg;
+	delete backGround;
+	delete orangeImg;
+	delete blueImg;
+	delete UIArrow;
+	delete greenImg;
 }

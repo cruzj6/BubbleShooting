@@ -8,6 +8,7 @@ class SpriteSheet
 	Graphics* gfx;
 	ID2D1Bitmap* bmp;
 	ID2D1BitmapRenderTarget *pCompatibleRenderTarget;
+
 public: 
 	SpriteSheet(LPCWSTR fileName, Graphics* gfx);
 

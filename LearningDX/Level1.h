@@ -58,7 +58,7 @@ private:
 	void RenderUI();
 	void RenderNextColorDisplay();
 	void UpdateSpeedForTime(double timeTotal, double timeDelta);
-	ColorTypes GetRandomColor();
+	ColorTypes GetNextColor();
 	void GetColorRBG(ColorTypes colorNum, float* r, float* b, float* g);
 	wchar_t* GetStringFromColorType(ColorTypes color);
 	void UpdatePopBalls(ballObject* firedBall, ballObject* lastBall);
@@ -67,4 +67,6 @@ private:
 	void RenderScore();
 	void DrawImageColor(ColorTypes color, float x, float y, float width, float height);
 	void RenderWinner();
+	bool CheckIfWinner();
+	ColorTypes GetRandomColor();
 };

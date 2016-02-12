@@ -1,36 +1,37 @@
-﻿Build started 2/12/2016 8:44:22 AM.
+﻿Build started 2/12/2016 11:56:08 AM.
      1>Project "C:\Users\cruzj6\Desktop\LearningDX\LearningDX\LearningDX.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(381,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (LearningDX.vcxproj).  This can lead to incorrect clean and rebuild behavior.
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /sdl /Od /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt GameController.cpp GameLevel.cpp Level1.cpp SpriteSheet.cpp
          Level1.cpp
-     1>Level1.cpp(16): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>Level1.cpp(98): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(99): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(100): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(101): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(131): warning C4244: 'initializing' : conversion from 'DWORD' to 'float', possible loss of data
-     1>Level1.cpp(134): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(134): warning C4244: 'return' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(142): warning C4244: 'return' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(153): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(159): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(160): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>Level1.cpp(165): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(223): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(224): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(225): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(287): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(303): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(363): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(364): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Level1.cpp(414): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(418): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(422): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(428): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Level1.cpp(454): warning C4305: '=' : truncation from 'double' to 'float'
-     1>Level1.cpp(463): warning C4305: '=' : truncation from 'double' to 'float'
-     1>Level1.cpp(670): warning C4554: '|' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>Level1.cpp(24): warning C4305: 'initializing' : truncation from 'double' to 'const float'
+     1>Level1.cpp(107): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(108): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(109): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(110): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(140): warning C4244: 'initializing' : conversion from 'DWORD' to 'float', possible loss of data
+     1>Level1.cpp(143): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(143): warning C4244: 'return' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(151): warning C4244: 'return' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(162): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(168): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(169): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>Level1.cpp(174): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(231): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(232): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(251): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(252): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(253): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(315): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(332): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(391): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(392): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Level1.cpp(445): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(449): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(453): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(459): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Level1.cpp(485): warning C4305: '=' : truncation from 'double' to 'float'
+     1>Level1.cpp(494): warning C4305: '=' : truncation from 'double' to 'float'
          Generating Code...
          Skipping... (no relevant changes detected)
          SpriteSheet.cpp
@@ -48,4 +49,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.99
+Time Elapsed 00:00:01.28
