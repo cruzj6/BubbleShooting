@@ -60,13 +60,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	RECT rect = { 0, 0, 800, 600 };
 	AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW);
 
-	HWND mWindHandle = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "MainWindow", "Learning DirectX", WS_OVERLAPPEDWINDOW, 100, 100, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, 0);
+	HWND mWindHandle = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "MainWindow", "Bubble Shoot: Lauren Edition", WS_OVERLAPPEDWINDOW, 100, 100, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, 0);
 
 	if (!mWindHandle)
 	{
 		return -1;
 	}
 
+	//Uncomment this to use console window for debugging using default in-out streams
 	/*AllocConsole();
 
 	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);

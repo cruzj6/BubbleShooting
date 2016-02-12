@@ -26,9 +26,12 @@ class Level1 : public GameLevel
 {
 
 	SpriteSheet* UIImage;
-	SpriteSheet* lipStick;
-	SpriteSheet* avacadoImg;
+	SpriteSheet* redImg;
+	SpriteSheet* greenImg;
+	SpriteSheet* orangeImg;
 	SpriteSheet* backGround;
+	SpriteSheet* blueImg;
+	SpriteSheet* yellowImg;
 
 public:
 	Level1(Graphics* _gfx)
@@ -63,4 +66,5 @@ private:
 	void RenderUIArrow();
 	void RenderScore();
 	void DrawImageColor(ColorTypes color, float x, float y, float width, float height);
+	void RenderWinner();
 };

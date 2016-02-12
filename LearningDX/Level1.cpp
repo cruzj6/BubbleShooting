@@ -8,7 +8,7 @@
 //Constants
 const float SPAWN_TIME= 5.0f;//In Seconds
 const int NUM_ROWS = 20;
-const int NUM_COLS = 20;
+const int NUM_COLS = 17;
 const float Y_SPAWN_RATE = 1000.0f;//For entry transition and random new balls
 const float FIRE_RATE = 1000.0f;
 const float GRID_SPACE_SIZE = 50.0f;
@@ -60,9 +60,11 @@ float hash3(float num0, float num1, float num2);
 void Level1::Load()
 {
 	spawnCountDown = SPAWN_TIME;
-	lipStick = new SpriteSheet(L"lipstick.png",gfx);
+	redImg = new SpriteSheet(L"lipstick.png",gfx);
 	UIArrow = new SpriteSheet(L"Aim_Arrow.png", gfx);
-	avacadoImg = new SpriteSheet(L"avacado.png", gfx);
+	greenImg = new SpriteSheet(L"avacado.png", gfx);
+	orangeImg = new SpriteSheet(L"squirrel.png", gfx);
+	blueImg = new SpriteSheet(L"seagull.png", gfx);
 	UIImage = new SpriteSheet(L"UIBar.png", gfx);
 	backGround = new SpriteSheet(L"unicornbkg.jpg", gfx);
 
@@ -94,7 +96,7 @@ void Level1::LoadInitialLevelBalls()
 				//Create the new ball and initialize it's properties, setting exist to true so it will render
 				ballObject newBall;
 				newBall.yDestination = (CIRCLE_RADIUS * 2) * (j + 1);
-				newBall.xDestination = (CIRCLE_RADIUS * 2) * (i + 1);
+				newBall.xDestination = (CIRCLE_RADIUS * 2) * (i + 0.5f);
 				newBall.currentLocationX = newBall.xDestination;
 				newBall.currentLocationY = newBall.yDestination;
 				newBall.exists = true;
@@ -117,7 +119,11 @@ void Level1::UnLoad()
 	delete bp;
 	delete bpFire;
 	delete balls;
-	delete lipStick;
+	delete redImg;
+	delete backGround;
+	delete orangeImg;
+	delete UIArrow;
+	delete greenImg;
 }
 
 float randomNum(float low, float high)
@@ -156,7 +162,7 @@ void Level1::Update(double timeTotal, double timeDelta)
 		//Deduct from timer
 		spawnCountDown = SPAWN_TIME;
 
-		newBall->currentLocationX = randomNum * NUM_COLS;
+		newBall->currentLocationX = randomNum * (NUM_COLS + .5);
 		newBall->currentLocationY = Y_RES;
 		newBall->transitioningIn = true;
 		newBall->exists = true;
@@ -238,8 +244,8 @@ void Level1::Render()
 					float circleRadius = CIRCLE_RADIUS;
 					if (ball->exists) {
 						GetColorRBG(balls[i][j].color, &r, &b, &g);
-						lipStick->Draw(ball->currentLocationX - CIRCLE_RADIUS, ball->currentLocationY + y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
-						gfx->DrawCircle(ball->currentLocationX, ball->currentLocationY + y, circleRadius,r, g, b, 1.0);
+						gfx->DrawCircle(ball->currentLocationX, ball->currentLocationY + y, circleRadius, r, g, b, 1.0);
+						DrawImageColor(ball->color, ball->currentLocationX - CIRCLE_RADIUS, ball->currentLocationY + y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
 					}
 				}
 			}
@@ -264,10 +270,15 @@ void Level1::RenderFiringBall()
 		float b;
 		float g;
 		GetColorRBG(bpFire->color, &r, &b, &g);
+		gfx->DrawCircle(bpFire->currentLocationX, bpFire->currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
 		DrawImageColor(bpFire->color, bpFire->currentLocationX - CIRCLE_RADIUS,
 			bpFire->currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
-		gfx->DrawCircle(bpFire->currentLocationX, bpFire->currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
 	}
+}
+
+void Level1::RenderWinner()
+{
+
 }
 
 //Calls each function that renders the UI for each frame
@@ -332,7 +343,7 @@ void Level1::RenderScore()
 	WCHAR* nonConstStr = const_cast<WCHAR*>(scoreWChar);
 
 	//Finally draw it
-	gfx->WriteText(nonConstStr, (X_RES/9) * 2, Y_RES - Y_RES/6, ((X_RES/9) * 2) + 100, Y_RES);
+	gfx->WriteText(nonConstStr, (X_RES/9) * 2, Y_RES - Y_RES/5, ((X_RES/9) * 2) + 100, Y_RES);
 }
 
 //Renders the text and the Color diplay itself stating the color of the next ball
@@ -387,9 +398,9 @@ void Level1::RenderBallArray()
 			if (balls[i][j].exists)
 			{
 				GetColorRBG(balls[i][j].color, &r, &b, &g);
+				gfx->DrawCircle(balls[i][j].currentLocationX, balls[i][j].currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
 				DrawImageColor(balls[i][j].color, balls[i][j].currentLocationX - CIRCLE_RADIUS,
 					balls[i][j].currentLocationY - CIRCLE_RADIUS, CIRCLE_RADIUS * 2 , CIRCLE_RADIUS * 2);
-				gfx->DrawCircle(balls[i][j].currentLocationX, balls[i][j].currentLocationY, CIRCLE_RADIUS, r, g, b, 1.0);
 			}
 		}
 	}
@@ -400,17 +411,23 @@ void Level1::DrawImageColor(ColorTypes color,float x,float y, float width, float
 	switch (color)
 	{
 		case ColorTypes::RED:
-			lipStick->Draw(x, y, width, height);
+			redImg->Draw(x, y, width, height);
 			break;
 
 		case ColorTypes::BLUE:
+			blueImg->Draw(x, y, width, height);
+			break;
 
 		case ColorTypes::ORANGE:
+			orangeImg->Draw(x, y, width, height);
+			break;
 
 		case ColorTypes::YELLOW:
 
 		case ColorTypes::GREEN:
-			avacadoImg->Draw(x, y, width, height);
+			greenImg->Draw(x, y, width, height);
+			break;
+
 		default:
 			return;
 	}
@@ -507,11 +524,43 @@ bool Level1::CheckBallShouldStop(ballObject* ball)
 
 				float distance = sqrt(pow(placedXCenter - curX, 2) + pow(placedYCenter - curY, 2));
 
-				bool shouldStop = distance <= ((CIRCLE_RADIUS * 2.0f) + 6.0f) && &balls[i][j] != ball;
-				shouldStop = shouldStop | curY <= 0; //Stop at top of screen
+				bool shouldStop = distance <= ((CIRCLE_RADIUS * 2.0f)) && &balls[i][j] != ball;
+				shouldStop = shouldStop || curY <= 0; //Stop at top of screen
 				if (shouldStop)
 				{
 					isNear = true;
+					//Make sure we are not rendering colliding balls
+					if (distance < (CIRCLE_RADIUS * 2) + 1.0f)
+					{
+						//Get how far off ideal resting place we are
+						float distDiff = ((CIRCLE_RADIUS * 2) + 1.0f) - distance;
+						float distX = placedXCenter - curX;
+						float distY = placedYCenter - curY;
+
+						//While we need to adjust distance loop through
+						for (int i = 1; i <= distDiff; i++)
+						{
+							//Even, adjust x
+							if (i % 2 == 0)
+							{
+								if (distX < 0)
+								{
+									ball->currentLocationX += 1.0f;
+								}
+								else
+									ball->currentLocationX -= 1.0f;
+							}
+							else //Odd adjust Y
+							{
+								if (distY < 0)
+								{
+									ball->currentLocationY += 1.0f;
+								}
+								else
+									ball->currentLocationX -= 1.0f;
+							}
+						}
+					}
 				}
 				if (!(isNear))
 				{
@@ -617,7 +666,7 @@ void Level1::UpdatePopBalls(ballObject* firedBall, ballObject* lastBall)
 
 					float distance = sqrt(pow(placedXCenter - curX, 2) + pow(placedYCenter - curY, 2));
 
-					bool shouldStop = distance <= ((CIRCLE_RADIUS * 2.0f) + 6.0f) && &balls[i][j] != firedBall;
+					bool shouldStop = distance <= ((CIRCLE_RADIUS * 2.0f) + 20.0f) && &balls[i][j] != firedBall;
 					shouldStop = shouldStop | curY <= 0; //Stop at top of screen
 					if (shouldStop)
 					{

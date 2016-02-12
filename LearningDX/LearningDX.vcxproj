@@ -22,6 +22,7 @@
     <ProjectGuid>{C9599F97-C0D2-43C1-972B-956EF7814002}</ProjectGuid>
     <RootNamespace>LearningDX</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>BubbleShooter</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
